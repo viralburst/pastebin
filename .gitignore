@@ -103,6 +103,12 @@ test-*.html
 debug-*.html
 *.test.html
 
+# Internal development files
+BLUEPRINT.md
+NOTES.md
+TODO.md
+INTERNAL.md
+
 # Cloudflare specific
 .dev.vars
 .wrangler/
