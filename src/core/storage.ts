@@ -32,7 +32,7 @@ export interface IStorage {
 export class StorageError extends Error {
   constructor(
     message: string,
-    public code: string
+    public code: string,
   ) {
     super(message);
     this.name = 'StorageError';

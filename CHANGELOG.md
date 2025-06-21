@@ -5,6 +5,33 @@ All notable changes to Secure Pastebin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-01-15
+
+### ✨ New Features
+
+#### GitHub Integration & Open Source Visibility
+- **GitHub Link**: Added prominent GitHub repository links across all pages
+  - Beautiful floating GitHub button in hero section with hover effects
+  - Open source notice banner highlighting developer availability
+  - Footer links on all pages (home, success, view, delete confirmation)
+  - Consistent styling with GitHub icon and "Open Source" branding
+- **Developer Outreach**: Clear messaging that the project is available for other developers
+- **Repository Integration**: All links point to `https://github.com/viralburst/pastebin`
+
+#### UI/UX Improvements
+- **Enhanced Hero Section**: Added relative positioning for floating elements
+- **Open Source Banner**: Dedicated section highlighting open source nature
+- **Responsive Design**: GitHub links adapt to mobile with proper positioning
+- **Visual Polish**: Backdrop blur effects, smooth transitions, and modern styling
+
+### 🎨 Design Updates
+- Added glassmorphism effects to GitHub buttons
+- Consistent icon sizing and positioning across all pages
+- Mobile-optimized GitHub link placement
+- Enhanced footer styling with developer-friendly messaging
+
+---
+
 ## [1.0.2] - 2025-01-15
 
 ### 🔄 Dependencies & Tooling Updates

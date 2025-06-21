@@ -14,7 +14,7 @@ export interface SecurityConfig {
 export class SecurityError extends Error {
   constructor(
     message: string,
-    public code: string
+    public code: string,
   ) {
     super(message);
     this.name = 'SecurityError';
@@ -31,47 +31,47 @@ export class SecurityManager {
     severity: 'high' | 'medium' | 'low';
   }[] = [
     // API Keys and tokens
-    {
-      name: 'api_key',
-      pattern: /(api[_-]?key|token|secret)[\s"']*[:=][\s"']*[a-zA-Z0-9]{20,}/i,
-      severity: 'high',
-    },
-    { name: 'aws_key', pattern: /AKIA[0-9A-Z]{16}/, severity: 'high' },
-    { name: 'openai_key', pattern: /sk-[a-zA-Z0-9]{48}/i, severity: 'high' },
-    {
-      name: 'github_token',
-      pattern: /gh[pousr]_[A-Za-z0-9_]{36,255}/,
-      severity: 'high',
-    },
-    {
-      name: 'jwt_token',
-      pattern: /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/,
-      severity: 'medium',
-    },
-    // Credentials
-    {
-      name: 'password',
-      pattern: /(password|pwd|passwd)\s*[:=]\s*["']?[^\s"']{8,}/i,
-      severity: 'medium',
-    },
-    {
-      name: 'connection_string',
-      pattern: /(mongodb|postgres|mysql):\/\/[^\s]+/i,
-      severity: 'high',
-    },
-    // PII patterns
-    { name: 'ssn', pattern: /\b\d{3}-?\d{2}-?\d{4}\b/, severity: 'high' },
-    {
-      name: 'credit_card',
-      pattern: /\b(?:\d{4}[\s-]?){3}\d{4}\b/,
-      severity: 'high',
-    },
-    {
-      name: 'email_bulk',
-      pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\s*[,;\n]){5,}/g,
-      severity: 'medium',
-    },
-  ];
+      {
+        name: 'api_key',
+        pattern: /(api[_-]?key|token|secret)[\s"']*[:=][\s"']*[a-zA-Z0-9]{20,}/i,
+        severity: 'high',
+      },
+      { name: 'aws_key', pattern: /AKIA[0-9A-Z]{16}/, severity: 'high' },
+      { name: 'openai_key', pattern: /sk-[a-zA-Z0-9]{48}/i, severity: 'high' },
+      {
+        name: 'github_token',
+        pattern: /gh[pousr]_[A-Za-z0-9_]{36,255}/,
+        severity: 'high',
+      },
+      {
+        name: 'jwt_token',
+        pattern: /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/,
+        severity: 'medium',
+      },
+      // Credentials
+      {
+        name: 'password',
+        pattern: /(password|pwd|passwd)\s*[:=]\s*["']?[^\s"']{8,}/i,
+        severity: 'medium',
+      },
+      {
+        name: 'connection_string',
+        pattern: /(mongodb|postgres|mysql):\/\/[^\s]+/i,
+        severity: 'high',
+      },
+      // PII patterns
+      { name: 'ssn', pattern: /\b\d{3}-?\d{2}-?\d{4}\b/, severity: 'high' },
+      {
+        name: 'credit_card',
+        pattern: /\b(?:\d{4}[\s-]?){3}\d{4}\b/,
+        severity: 'high',
+      },
+      {
+        name: 'email_bulk',
+        pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\s*[,;\n]){5,}/g,
+        severity: 'medium',
+      },
+    ];
 
   constructor(config: Partial<SecurityConfig> = {}) {
     this.config = {
@@ -278,7 +278,7 @@ export class SecurityManager {
         ...event,
         level: 'SECURITY',
         source: 'SecurityManager',
-      })
+      }),
     );
   }
 

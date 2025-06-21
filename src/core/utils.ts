@@ -171,7 +171,7 @@ export class LanguageDetector {
 
     // Return language with highest score
     const bestMatch = Object.entries(scores).reduce((prev, curr) =>
-      curr[1] > prev[1] ? curr : prev
+      curr[1] > prev[1] ? curr : prev,
     );
 
     return bestMatch[0];
@@ -296,7 +296,7 @@ export class ResponseUtils {
   static json(
     data: unknown,
     status = 200,
-    additionalHeaders: Record<string, string> = {}
+    additionalHeaders: Record<string, string> = {},
   ): Response {
     return new Response(JSON.stringify(data, null, 2), {
       status,
@@ -312,7 +312,7 @@ export class ResponseUtils {
   static html(
     content: string,
     status = 200,
-    additionalHeaders: Record<string, string> = {}
+    additionalHeaders: Record<string, string> = {},
   ): Response {
     return new Response(content, {
       status,
@@ -328,7 +328,7 @@ export class ResponseUtils {
   static text(
     content: string,
     status = 200,
-    additionalHeaders: Record<string, string> = {}
+    additionalHeaders: Record<string, string> = {},
   ): Response {
     return new Response(content, {
       status,
@@ -528,7 +528,7 @@ export class PerformanceUtils {
   // Debounce function calls
   static debounce<T extends (...args: any[]) => void>(
     func: T,
-    wait: number
+    wait: number,
   ): (...args: Parameters<T>) => void {
     let timeout: number | undefined;
     return (...args: Parameters<T>) => {
@@ -540,7 +540,7 @@ export class PerformanceUtils {
   // Throttle function calls
   static throttle<T extends (...args: any[]) => void>(
     func: T,
-    limit: number
+    limit: number,
   ): (...args: Parameters<T>) => void {
     let inThrottle: boolean;
     return (...args: Parameters<T>) => {
@@ -574,7 +574,7 @@ export class PerformanceUtils {
     preTags.forEach((preContent, index) => {
       htmlWithPlaceholders = htmlWithPlaceholders.replace(
         `__PRE_PLACEHOLDER_${index}__`,
-        preContent
+        preContent,
       );
     });
 

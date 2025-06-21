@@ -71,7 +71,7 @@ export class CreateHandler {
       const expiryValidation = this.security.validateExpiry(
         expirySeconds,
         CONFIG.MIN_EXPIRY,
-        CONFIG.MAX_EXPIRY
+        CONFIG.MAX_EXPIRY,
       );
       if (!expiryValidation.valid) {
         return ResponseUtils.error(expiryValidation.error!, 400);
@@ -278,7 +278,7 @@ export class CreateHandler {
             {
               status: 400,
               headers: { 'content-type': 'text/html' },
-            }
+            },
           );
         }
       }

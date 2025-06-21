@@ -60,7 +60,7 @@ export interface IAnalytics {
 export class AnalyticsError extends Error {
   constructor(
     message: string,
-    public code: string
+    public code: string,
   ) {
     super(message);
     this.name = 'AnalyticsError';
@@ -87,7 +87,7 @@ export class InMemoryAnalytics implements IAnalytics {
     language: string,
     size: number,
     clientIP: string,
-    metadata: Partial<AnalyticsEvent> = {}
+    metadata: Partial<AnalyticsEvent> = {},
   ): Promise<void> {
     const event: AnalyticsEvent = {
       type: 'paste_created',
@@ -104,7 +104,7 @@ export class InMemoryAnalytics implements IAnalytics {
   async trackPasteViewed(
     pasteId: string,
     clientIP: string,
-    metadata: Partial<AnalyticsEvent> = {}
+    metadata: Partial<AnalyticsEvent> = {},
   ): Promise<void> {
     const event: AnalyticsEvent = {
       type: 'paste_viewed',
@@ -130,7 +130,7 @@ export class InMemoryAnalytics implements IAnalytics {
   async trackError(
     error: string,
     clientIP?: string,
-    metadata: Partial<AnalyticsEvent> = {}
+    metadata: Partial<AnalyticsEvent> = {},
   ): Promise<void> {
     const event: AnalyticsEvent = {
       type: 'error',
@@ -215,40 +215,40 @@ export class InMemoryAnalytics implements IAnalytics {
       const hourStats = stats.hourlyStats![hourKey];
 
       switch (event.type) {
-        case 'paste_created':
-          stats.totalShares++;
-          dayStats.shares++;
-          if (this.config.aggregateHourly && hourStats) {
-            hourStats.shares++;
-          }
+      case 'paste_created':
+        stats.totalShares++;
+        dayStats.shares++;
+        if (this.config.aggregateHourly && hourStats) {
+          hourStats.shares++;
+        }
 
-          if (event.language) {
-            languageCounts[event.language] = (languageCounts[event.language] || 0) + 1;
-          }
+        if (event.language) {
+          languageCounts[event.language] = (languageCounts[event.language] || 0) + 1;
+        }
 
-          if (event.size) {
-            pasteSizes.push(event.size);
-          }
-          break;
+        if (event.size) {
+          pasteSizes.push(event.size);
+        }
+        break;
 
-        case 'paste_viewed':
-          stats.totalViews++;
-          dayStats.views++;
-          if (this.config.aggregateHourly && hourStats) {
-            hourStats.views++;
-          }
-          break;
+      case 'paste_viewed':
+        stats.totalViews++;
+        dayStats.views++;
+        if (this.config.aggregateHourly && hourStats) {
+          hourStats.views++;
+        }
+        break;
 
-        case 'paste_expired':
+      case 'paste_expired':
           stats.totalExpired!++;
-          break;
+        break;
 
-        case 'error':
+      case 'error':
           stats.totalErrors!++;
-          if (dayStats.errors !== undefined) {
-            dayStats.errors++;
-          }
-          break;
+        if (dayStats.errors !== undefined) {
+          dayStats.errors++;
+        }
+        break;
       }
     }
 
@@ -258,7 +258,7 @@ export class InMemoryAnalytics implements IAnalytics {
 
     if (pasteSizes.length > 0) {
       stats.avgPasteSize = Math.round(
-        pasteSizes.reduce((sum, size) => sum + size, 0) / pasteSizes.length
+        pasteSizes.reduce((sum, size) => sum + size, 0) / pasteSizes.length,
       );
     }
 
@@ -358,7 +358,7 @@ export class KVAnalytics implements IAnalytics {
     language: string,
     size: number,
     clientIP: string,
-    metadata: Partial<AnalyticsEvent> = {}
+    metadata: Partial<AnalyticsEvent> = {},
   ): Promise<void> {
     try {
       const today = this.getDateKey();
@@ -401,7 +401,7 @@ export class KVAnalytics implements IAnalytics {
   async trackPasteViewed(
     pasteId: string,
     clientIP: string,
-    metadata: Partial<AnalyticsEvent> = {}
+    metadata: Partial<AnalyticsEvent> = {},
   ): Promise<void> {
     try {
       const today = this.getDateKey();
@@ -459,7 +459,7 @@ export class KVAnalytics implements IAnalytics {
   async trackError(
     error: string,
     clientIP?: string,
-    metadata: Partial<AnalyticsEvent> = {}
+    metadata: Partial<AnalyticsEvent> = {},
   ): Promise<void> {
     try {
       const today = this.getDateKey();
@@ -570,7 +570,7 @@ export class KVAnalytics implements IAnalytics {
   }
 
   private async getDailyStats(
-    days: number
+    days: number,
   ): Promise<Record<string, { shares: number; views: number; errors?: number }>> {
     const dailyStats: Record<string, { shares: number; views: number; errors?: number }> = {};
 
@@ -607,7 +607,7 @@ export class KVAnalytics implements IAnalytics {
   }
 
   private calculateTopLanguages(
-    languages: Record<string, number>
+    languages: Record<string, number>,
   ): Array<{ language: string; count: number; percentage: number }> {
     const total = Object.values(languages).reduce((sum, count) => sum + count, 0);
 

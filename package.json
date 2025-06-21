@@ -1,6 +1,6 @@
 {
   "name": "secure-pastebin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Live at https://1paste.dev",
   "main": "dist/worker.js",
