@@ -1,13 +1,37 @@
 # 🔐 Secure Pastebin
 
-A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Perfect for sharing code snippets, logs, and sensitive data with automatic expiration.
+[![GitHub stars](https://img.shields.io/github/stars/viralburst/pastebin?style=social)](https://github.com/viralburst/pastebin/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/viralburst/pastebin?style=social)](https://github.com/viralburst/pastebin/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/viralburst/pastebin)](https://github.com/viralburst/pastebin/issues)
+[![GitHub license](https://img.shields.io/github/license/viralburst/pastebin)](https://github.com/viralburst/pastebin/blob/main/LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+
+A **production-ready, secure pastebin** built on **Cloudflare Workers** with **one-time view capability**, comprehensive analytics, and a beautiful modern UI. Perfect for sharing code snippets, logs, and sensitive data with automatic expiration.
+
+**🎯 Keywords**: *secure pastebin, code sharing, one-time view, Cloudflare Workers, TypeScript, edge computing, serverless, privacy-focused, auto-expiration, paste sharing*
 
 ## 🌟 **[Try it Live!](https://1paste.dev)** 🌟
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-1paste.dev-purple?style=for-the-badge&logo=cloudflare)](https://1paste.dev)
 [![Status](https://img.shields.io/badge/Status-🟢_Online-success?style=for-the-badge)](https://1paste.dev)
+[![Performance](https://img.shields.io/badge/Performance-⚡_Sub_50ms-brightgreen?style=for-the-badge)](https://1paste.dev)
 
 **Official Instance**: [https://1paste.dev](https://1paste.dev) - Ready to use right now!
+
+## 📋 Table of Contents
+
+- [🌟 Try it Live!](#-try-it-live)
+- [✨ Features](#-features)
+- [🚀 Quick Start](#-quick-start)
+- [🎯 Usage](#-usage)
+- [📖 API Documentation](#-api-documentation)
+- [⚙️ Configuration](#️-configuration)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [🔗 Links](#-links)
+
+---
 
 > **🍴 Forked this repo?** Update the deploy button and links! See [SETUP.md](SETUP.md) for quick customization.
 
@@ -455,6 +479,19 @@ If you find this project useful, please consider giving it a star! ⭐
 
 ---
 
+## 🔗 Links
+
+- **🌐 Live Demo**: [https://1paste.dev](https://1paste.dev)
+- **📊 GitHub Repository**: [https://github.com/viralburst/pastebin](https://github.com/viralburst/pastebin)
+- **⚡ Cloudflare Workers**: [https://workers.cloudflare.com/](https://workers.cloudflare.com/)
+- **🔧 TypeScript**: [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- **🛠️ Wrangler CLI**: [https://developers.cloudflare.com/workers/wrangler/](https://developers.cloudflare.com/workers/wrangler/)
+- **📚 Documentation**: [DEPLOYMENT.md](DEPLOYMENT.md) | [CONTRIBUTING.md](CONTRIBUTING.md) | [SECURITY.md](SECURITY.md)
+
+---
+
 **Made with ❤️ using Cloudflare Workers and TypeScript**
 
 *Secure, fast, and beautiful paste sharing for developers* 
+
+**⭐ Star this repo if you find it useful! ⭐** 

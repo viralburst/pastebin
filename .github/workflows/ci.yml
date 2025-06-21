@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run type check
+      run: npm run type-check
+      
+    - name: Run linting
+      run: npm run lint --if-present
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Run tests
+      run: npm test --if-present
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run security audit
+      run: npm audit --audit-level moderate
+      
+    - name: Check for vulnerabilities
+      run: npm audit --audit-level high
+
+  deploy-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for deployment
+      run: npm run build
+      
+    - name: Validate Wrangler config
+      run: npx wrangler deploy --dry-run --config wrangler.toml 

@@ -1,0 +1,19 @@
+# Global owners - these users will be requested for review on all PRs
+* @viralburst
+
+# Core application files
+/src/ @viralburst
+/wrangler.toml @viralburst
+
+# Documentation
+*.md @viralburst
+/docs/ @viralburst
+
+# Configuration files
+package.json @viralburst
+tsconfig.json @viralburst
+.github/ @viralburst
+
+# Security-related files
+SECURITY.md @viralburst
+/src/core/security.ts @viralburst 
