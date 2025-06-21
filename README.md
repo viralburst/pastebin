@@ -2,7 +2,9 @@
 
 A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Perfect for sharing code snippets, logs, and sensitive data with automatic expiration.
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/viralburst/pastebin)
+> **🍴 Forked this repo?** Update the deploy button and links! See [SETUP.md](SETUP.md) for quick customization.
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)
 
 ## ✨ Features
 
@@ -56,13 +58,15 @@ A production-ready, secure pastebin built on Cloudflare Workers with one-time vi
 
 ### One-Click Deploy
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/viralburst/pastebin)
+> **Note**: If you forked this repository, update the placeholders first! See [SETUP.md](SETUP.md) for instructions.
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)
 
 ### Manual Installation
 
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/viralburst/pastebin.git
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
 cd secure-pastebin
 npm install
 ```

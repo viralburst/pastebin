@@ -18,7 +18,7 @@ Before deploying, ensure you have:
 The fastest way to get started:
 
 1. **Click the deploy button**:
-   [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/viralburst/pastebin)
+   [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)
 
 2. **Follow the setup wizard**:
    - Connect your GitHub account
@@ -44,7 +44,7 @@ The fastest way to get started:
 
 3. **Clone the repository**:
    ```bash
-   git clone https://github.com/viralburst/pastebin.git
+   git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
    cd secure-pastebin
    npm install
    ```
