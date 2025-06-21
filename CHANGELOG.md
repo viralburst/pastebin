@@ -5,7 +5,35 @@ All notable changes to Secure Pastebin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-01-XX
+## [1.0.1] - 2025-06-21
+
+### 🌟 Official Live Deployment
+
+**🎉 Secure Pastebin is now LIVE at [https://1paste.dev](https://1paste.dev)!**
+
+#### What's New
+- **🌐 Official Instance**: Live deployment at `https://1paste.dev`
+- **📊 Real-World Testing**: Fully tested in production environment
+- **🔧 Domain Configuration**: Custom domain setup with Cloudflare Workers
+- **📚 Updated Documentation**: README and package.json updated with live URL
+- **🏷️ Status Badges**: Added live demo and status badges to README
+
+#### Technical Details
+- **Worker Name**: `secure-pastebin`
+- **Domain**: `1paste.dev` (with www redirect)
+- **SSL/TLS**: Full encryption with Cloudflare certificates
+- **Global Edge**: Deployed on Cloudflare's worldwide network
+- **Performance**: Sub-50ms response times globally
+
+#### Repository Updates
+- **Homepage URL**: Updated to point to live instance
+- **Package Description**: Added live URL reference
+- **README Enhancement**: Prominent "Try it Live!" section with badges
+- **Status Monitoring**: Live status indicators
+
+---
+
+## [1.0.0] - 2025-06-21
 
 ### 🎉 Initial Release
 

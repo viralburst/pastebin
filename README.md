@@ -2,6 +2,13 @@
 
 A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Perfect for sharing code snippets, logs, and sensitive data with automatic expiration.
 
+## 🌟 **[Try it Live!](https://1paste.dev)** 🌟
+
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-1paste.dev-purple?style=for-the-badge&logo=cloudflare)](https://1paste.dev)
+[![Status](https://img.shields.io/badge/Status-🟢_Online-success?style=for-the-badge)](https://1paste.dev)
+
+**Official Instance**: [https://1paste.dev](https://1paste.dev) - Ready to use right now!
+
 > **🍴 Forked this repo?** Update the deploy button and links! See [SETUP.md](SETUP.md) for quick customization.
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)

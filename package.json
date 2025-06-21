@@ -1,9 +1,9 @@
 {
   "name": "secure-pastebin",
-  "version": "1.0.0",
-  "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI",
+  "version": "1.0.1",
+  "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Live at https://1paste.dev",
   "main": "dist/worker.js",
-  "homepage": "https://github.com/YOUR_USERNAME/YOUR_REPO_NAME",
+  "homepage": "https://1paste.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git"

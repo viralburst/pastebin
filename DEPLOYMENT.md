@@ -2,6 +2,10 @@
 
 This guide covers deploying Secure Pastebin to various platforms, with detailed instructions for Cloudflare Workers (recommended) and other alternatives.
 
+## 🌟 Live Example
+
+**See it in action**: [https://1paste.dev](https://1paste.dev) - Official live instance running on Cloudflare Workers
+
 ## 📋 Prerequisites
 
 Before deploying, ensure you have:

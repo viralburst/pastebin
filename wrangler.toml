@@ -34,6 +34,12 @@ ENVIRONMENT = "development"
 MAX_PASTE_SIZE = "524288"  # 512KB for development
 ANALYTICS_ENABLED = "false"
 
+# Routes for custom domain
+routes = [
+  "1paste.dev/*",
+  "www.1paste.dev/*"
+]
+
 # Cron triggers for cleanup
 [triggers]
 crons = ["0 2 * * *"]  # Daily cleanup at 2 AM UTC 
