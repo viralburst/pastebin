@@ -1,0 +1,90 @@
+{
+  "name": "secure-pastebin",
+  "version": "1.0.0",
+  "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI",
+  "main": "dist/worker.js",
+  "homepage": "https://github.com/your-username/secure-pastebin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/secure-pastebin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/secure-pastebin/issues"
+  },
+  "scripts": {
+    "build": "tsc && wrangler deploy --dry-run",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "type-check": "tsc --noEmit",
+    "start": "wrangler dev",
+    "preview": "wrangler dev --local",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "clean": "rm -rf dist",
+    "validate": "npm run type-check && npm run lint && npm run format:check"
+  },
+  "keywords": [
+    "pastebin",
+    "paste-sharing",
+    "cloudflare-workers",
+    "typescript",
+    "security",
+    "one-time-view",
+    "edge-computing",
+    "serverless",
+    "kv-storage",
+    "progressive-enhancement",
+    "zero-dependencies",
+    "analytics",
+    "rate-limiting",
+    "xss-protection",
+    "auto-expiration",
+    "mobile-friendly",
+    "api-first",
+    "open-source"
+  ],
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com",
+    "url": "https://github.com/your-username"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "wrangler.toml",
+    "tsconfig.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4",
+    "wrangler": "^3.20.0"
+  },
+  "dependencies": {},
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/your-username"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+} 

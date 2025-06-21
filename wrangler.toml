@@ -1,0 +1,35 @@
+name = "secure-pastebin"
+main = "dist/worker.js"
+compatibility_date = "2023-12-18"
+
+# KV namespaces
+[[kv_namespaces]]
+binding = "PASTES_KV"
+id = "f2d520f94fa5422a9032b33c48f19f1e"
+preview_id = "7ae2f3df5a7042998754ded8f8333135"
+
+[[kv_namespaces]]
+binding = "ANALYTICS_KV"
+id = "cfe56f81a2834fffaeaaecad58ca96f0"
+preview_id = "aa35ce92aef243c096522484aba5e01e"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+MAX_PASTE_SIZE = "1048576"  # 1MB
+MAX_TITLE_LENGTH = "200"
+DEFAULT_EXPIRY_HOURS = "24"
+RATE_LIMIT_CREATE = "10"
+RATE_LIMIT_VIEW = "100"
+ANALYTICS_ENABLED = "true"
+
+# Development environment
+[env.development]
+[env.development.vars]
+ENVIRONMENT = "development"
+MAX_PASTE_SIZE = "524288"  # 512KB for development
+ANALYTICS_ENABLED = "false"
+
+# Cron triggers for cleanup
+[triggers]
+crons = ["0 2 * * *"]  # Daily cleanup at 2 AM UTC 
