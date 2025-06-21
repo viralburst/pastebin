@@ -2,16 +2,20 @@ name = "secure-pastebin"
 main = "dist/worker.js"
 compatibility_date = "2023-12-18"
 
-# KV namespaces
+# KV namespaces - Replace with your own namespace IDs
+# Run: wrangler kv namespace create PASTES_KV
+# Run: wrangler kv namespace create ANALYTICS_KV
+# Run: wrangler kv namespace create PASTES_KV --preview
+# Run: wrangler kv namespace create ANALYTICS_KV --preview
 [[kv_namespaces]]
 binding = "PASTES_KV"
-id = "f2d520f94fa5422a9032b33c48f19f1e"
-preview_id = "7ae2f3df5a7042998754ded8f8333135"
+id = "YOUR_PASTES_NAMESPACE_ID_HERE"
+preview_id = "YOUR_PASTES_PREVIEW_ID_HERE"
 
 [[kv_namespaces]]
 binding = "ANALYTICS_KV"
-id = "cfe56f81a2834fffaeaaecad58ca96f0"
-preview_id = "aa35ce92aef243c096522484aba5e01e"
+id = "YOUR_ANALYTICS_NAMESPACE_ID_HERE"
+preview_id = "YOUR_ANALYTICS_PREVIEW_ID_HERE"
 
 # Environment variables
 [vars]

@@ -107,6 +107,7 @@ debug-*.html
 .dev.vars
 .wrangler/
 wrangler.toml.bak
+wrangler.toml.local
 
 # TypeScript
 *.tsbuildinfo
