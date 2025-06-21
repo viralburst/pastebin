@@ -5,6 +5,41 @@ All notable changes to Secure Pastebin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2025-01-15
+
+### 🔄 Dependencies & Tooling Updates
+
+#### Updated Dependencies
+- **@cloudflare/workers-types**: `4.20231218.0` → `4.20250620.0`
+- **@types/node**: `20.10.0` → `24.0.3`
+- **@typescript-eslint/eslint-plugin**: `6.14.0` → `8.34.1`
+- **@typescript-eslint/parser**: `6.14.0` → `8.34.1`
+- **eslint**: `8.55.0` → `9.29.0`
+- **prettier**: `3.1.1` → `3.5.3`
+- **typescript**: `5.3.3` → `5.8.3`
+- **vitest**: `1.0.4` → `3.2.4`
+- **wrangler**: `3.20.0` → `4.20.5`
+
+#### Configuration Updates
+- **ESLint v9**: Migrated to new flat config format (`eslint.config.js`)
+- **Package.json**: Added `"type": "module"` for ES modules support
+- **Node.js**: Updated minimum requirement to Node.js 18+ (already supported)
+- **Security**: Fixed all security vulnerabilities in dependencies
+
+#### Code Quality Improvements
+- **Linting**: Resolved all ESLint errors and warnings
+- **Type Safety**: Updated TypeScript configurations for latest version
+- **Code Formatting**: Applied consistent formatting with updated Prettier
+- **Build System**: Verified compatibility with Wrangler v4
+
+#### Benefits
+- **Security**: Latest security patches and vulnerability fixes
+- **Performance**: Improved build times and runtime performance
+- **Developer Experience**: Better IDE support and error messages
+- **Future-Proof**: Ready for upcoming TypeScript and Node.js features
+
+---
+
 ## [1.0.1] - 2025-06-21
 
 ### 🌟 Official Live Deployment

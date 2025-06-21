@@ -1,6 +1,6 @@
 import { IStorage, PasteData } from '../core/storage';
 import { IAnalytics } from '../core/analytics';
-import { ResponseUtils, SanitizationUtils, TimeUtils, URLUtils, PerformanceUtils } from '../core/utils';
+import { ResponseUtils, SanitizationUtils, TimeUtils, PerformanceUtils } from '../core/utils';
 import { SecurityManager } from '../core/security';
 import { ErrorTemplate } from '../ui/templates/error';
 import { CONFIG } from '../config/constants';
@@ -52,7 +52,7 @@ export class ViewHandler {
     }
     try {
       const clientIP = SanitizationUtils.extractClientIP(request);
-      
+
       // Rate limiting check (if enabled)
       if (CONFIG.SECURITY.RATE_LIMITING_ENABLED) {
         const rateLimitResult = this.security.validateRateLimit(clientIP, 'view');
@@ -84,7 +84,7 @@ export class ViewHandler {
       // First, check if paste exists and is not expired
       const paste = await this.storage.getPaste(pasteId);
       if (!paste) {
-        return isApiRequest 
+        return isApiRequest
           ? ResponseUtils.notFound('Paste not found or has already been viewed')
           : ResponseUtils.html(ErrorTemplate.notFound());
       }
@@ -93,14 +93,14 @@ export class ViewHandler {
       if (paste.expiresAt && TimeUtils.isExpired(paste.expiresAt)) {
         // Clean up expired paste
         await this.storage.deletePaste(pasteId);
-        return isApiRequest 
+        return isApiRequest
           ? ResponseUtils.error('Paste has expired', 410)
           : ResponseUtils.html(ErrorTemplate.expired());
       }
 
       // Check if already consumed
       if (paste.consumed) {
-        return isApiRequest 
+        return isApiRequest
           ? ResponseUtils.notFound('Paste not found or has already been viewed')
           : ResponseUtils.html(ErrorTemplate.notFound());
       }
@@ -112,7 +112,7 @@ export class ViewHandler {
         const consumedPaste = await this.storage.consumePaste(pasteId);
         if (!consumedPaste) {
           // Race condition - someone else consumed it first
-          return isApiRequest 
+          return isApiRequest
             ? ResponseUtils.notFound('Paste not found or has already been viewed')
             : ResponseUtils.html(ErrorTemplate.notFound());
         }
@@ -142,7 +142,7 @@ export class ViewHandler {
             size: viewedPaste.size,
             createdAt: viewedPaste.createdAt,
             consumed: viewedPaste.oneTimeView, // Mark as consumed if it was one-time view
-          }
+          },
         };
         return ResponseUtils.success(response, 'Paste retrieved successfully');
       } else {
@@ -150,10 +150,9 @@ export class ViewHandler {
         const html = PerformanceUtils.minifyHTML(this.generateViewHTML(viewedPaste));
         return PerformanceUtils.addPerformanceHeaders(ResponseUtils.html(html));
       }
-
     } catch (error) {
       console.error('ViewHandler error:', error);
-      
+
       // Track error in analytics
       try {
         const clientIP = SanitizationUtils.extractClientIP(request);
@@ -161,10 +160,10 @@ export class ViewHandler {
       } catch {
         // Ignore analytics errors
       }
-      
+
       const acceptHeader = request.headers.get('accept');
       const isApiRequest = acceptHeader?.includes('application/json');
-      
+
       return isApiRequest
         ? ResponseUtils.error('Failed to retrieve paste', 500)
         : ResponseUtils.html(ErrorTemplate.serverError());
@@ -209,7 +208,6 @@ export class ViewHandler {
       }
 
       return new Response(null, { status: 200, headers });
-
     } catch (error) {
       console.error('ViewHandler HEAD error:', error);
       return new Response(null, { status: 500 });
@@ -220,7 +218,7 @@ export class ViewHandler {
   async handleDelete(request: Request, pasteId?: string): Promise<Response> {
     try {
       const clientIP = SanitizationUtils.extractClientIP(request);
-      
+
       // Rate limiting check (if enabled)
       if (CONFIG.SECURITY.RATE_LIMITING_ENABLED) {
         const rateLimitResult = this.security.validateRateLimit(clientIP, 'view');
@@ -264,21 +262,23 @@ export class ViewHandler {
       // Check if this is a form submission (redirect) or API request (JSON)
       const acceptHeader = request.headers.get('accept');
       const isApiRequest = acceptHeader?.includes('application/json');
-      
+
       if (isApiRequest) {
-        return ResponseUtils.success({ 
-          success: true, 
-          message: 'Paste deleted successfully' 
-        }, 'Paste deleted successfully');
+        return ResponseUtils.success(
+          {
+            success: true,
+            message: 'Paste deleted successfully',
+          },
+          'Paste deleted successfully'
+        );
       } else {
         // Form submission - redirect to success page
         const html = this.generateDeleteSuccessHTML();
         return ResponseUtils.html(html);
       }
-
     } catch (error) {
       console.error('ViewHandler delete error:', error);
-      
+
       // Track error in analytics
       try {
         const clientIP = SanitizationUtils.extractClientIP(request);
@@ -286,7 +286,7 @@ export class ViewHandler {
       } catch {
         // Ignore analytics errors
       }
-      
+
       return ResponseUtils.error('Failed to delete paste', 500);
     }
   }
@@ -294,8 +294,6 @@ export class ViewHandler {
   // Handle paste preview (first 500 characters without consuming)
   async handlePreview(request: Request, pasteId?: string): Promise<Response> {
     try {
-      const clientIP = SanitizationUtils.extractClientIP(request);
-      
       if (!pasteId) {
         pasteId = this.extractPasteIdFromUrl(request.url);
       }
@@ -321,9 +319,10 @@ export class ViewHandler {
 
       // Return preview (first 500 characters)
       const previewLength = 500;
-      const preview = paste.content.length > previewLength 
-        ? paste.content.substring(0, previewLength) + '...'
-        : paste.content;
+      const preview =
+        paste.content.length > previewLength
+          ? `${paste.content.substring(0, previewLength)}...`
+          : paste.content;
 
       const response = {
         success: true,
@@ -337,11 +336,10 @@ export class ViewHandler {
           truncated: paste.content.length > previewLength,
           fullSize: paste.content.length,
           expiresAt: paste.expiresAt,
-        }
+        },
       };
 
       return ResponseUtils.success(response, 'Paste preview retrieved successfully');
-
     } catch (error) {
       console.error('ViewHandler preview error:', error);
       return ResponseUtils.error('Failed to retrieve paste preview', 500);
@@ -352,7 +350,7 @@ export class ViewHandler {
     try {
       const urlObj = new URL(url);
       const pathParts = urlObj.pathname.split('/').filter(part => part.length > 0);
-      
+
       // Handle different URL patterns:
       // /paste123 -> paste123
       // /s/paste123 -> paste123 (main pattern)
@@ -360,10 +358,13 @@ export class ViewHandler {
       // /view/paste123 -> paste123
       if (pathParts.length === 1) {
         return pathParts[0];
-      } else if (pathParts.length === 2 && ['s', 'v', 'view', 'p', 'paste'].includes(pathParts[0])) {
+      } else if (
+        pathParts.length === 2 &&
+        ['s', 'v', 'view', 'p', 'paste'].includes(pathParts[0])
+      ) {
         return pathParts[1];
       }
-      
+
       return undefined;
     } catch {
       return undefined;
@@ -372,20 +373,23 @@ export class ViewHandler {
 
   private sanitizePasteId(pasteId: string | undefined): string | undefined {
     if (!pasteId) return undefined;
-    
+
     // Remove any non-alphanumeric characters and limit length
     const sanitized = pasteId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-    
+
     // Must be at least 8 characters and at most 20
     if (sanitized.length < 8 || sanitized.length > 20) {
       return undefined;
     }
-    
+
     return sanitized;
   }
 
   // Static method to get metadata without consuming
-  static async getMetadata(storage: IStorage, pasteId: string): Promise<{
+  static async getMetadata(
+    storage: IStorage,
+    pasteId: string
+  ): Promise<{
     exists: boolean;
     expired?: boolean;
     consumed?: boolean;
@@ -411,8 +415,8 @@ export class ViewHandler {
         return { exists: true, expired: true };
       }
 
-      const timeRemaining = paste.expiresAt 
-        ? TimeUtils.getTimeRemaining(paste.expiresAt).seconds 
+      const timeRemaining = paste.expiresAt
+        ? TimeUtils.getTimeRemaining(paste.expiresAt).seconds
         : undefined;
 
       return {
@@ -425,7 +429,7 @@ export class ViewHandler {
           createdAt: paste.createdAt,
           expiresAt: paste.expiresAt,
           timeRemaining,
-        }
+        },
       };
     } catch (error) {
       console.error('Failed to get paste metadata:', error);
@@ -862,7 +866,10 @@ export class ViewHandler {
             <p><strong>📋 To copy:</strong> Click the code below, then press <kbd>Ctrl+A</kbd> to select all, then <kbd>Ctrl+C</kbd> to copy.</p>
           </div>
         </noscript>
-${paste.oneTimeView ? '' : `
+${
+  paste.oneTimeView
+    ? ''
+    : `
         <div class="download-buttons">
           <a href="/download/${paste.id}?format=auto" class="btn btn-secondary" download>
             💾 Download
@@ -873,8 +880,12 @@ ${paste.oneTimeView ? '' : `
           <a href="/download/${paste.id}?format=md" class="btn btn-outline" download title="Download as Markdown">
             📋
           </a>
-        </div>`}
-${paste.oneTimeView ? '' : `
+        </div>`
+}
+${
+  paste.oneTimeView
+    ? ''
+    : `
         <form method="POST" action="/s/${paste.id}" style="display: inline;">
           <input type="hidden" name="_method" value="DELETE">
           <button type="submit" class="btn btn-danger" title="Delete this paste now" onclick="return confirm('Are you sure you want to delete this paste? This action cannot be undone.')">
@@ -888,7 +899,8 @@ ${paste.oneTimeView ? '' : `
               🗑️ Delete Now (No confirmation without JS)
             </button>
           </form>
-        </noscript>`}
+        </noscript>`
+}
       </div>
     </div>
 
@@ -908,9 +920,10 @@ ${paste.oneTimeView ? '' : `
       <h3>
         ${paste.oneTimeView ? '🔥 This paste has been destroyed' : '👁️ Multiple view mode'}
       </h3>
-      <p>${paste.oneTimeView 
-        ? 'For security reasons, this paste can only be viewed <strong>once</strong>. After someone views it, the paste is automatically deleted for security. <strong>Downloads are not available</strong> - please copy the content if needed.'
-        : 'This paste allows multiple views until expiration. It will be automatically deleted when it expires.'
+      <p>${
+        paste.oneTimeView
+          ? 'For security reasons, this paste can only be viewed <strong>once</strong>. After someone views it, the paste is automatically deleted for security. <strong>Downloads are not available</strong> - please copy the content if needed.'
+          : 'This paste allows multiple views until expiration. It will be automatically deleted when it expires.'
       }</p>
     </div>
 
@@ -918,11 +931,15 @@ ${paste.oneTimeView ? '' : `
       <div class="button-group">
         <a href="/" class="btn btn-primary">✨ Create New Paste</a>
         <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
-${paste.oneTimeView ? '' : `
+${
+  paste.oneTimeView
+    ? ''
+    : `
         <form method="POST" action="/s/${paste.id}" style="display: inline;">
           <input type="hidden" name="_method" value="DELETE">
           <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this paste? This action cannot be undone.')">🗑️ Delete This Paste</button>
-        </form>`}
+        </form>`
+}
         <noscript>
           <div class="no-js-warning">
             ⚠️ ${paste.oneTimeView ? 'This paste has been automatically deleted for security.' : 'Print and delete require JavaScript or use the "Delete Now" button above.'}
@@ -952,16 +969,16 @@ ${paste.oneTimeView ? '' : `
       '<': '&lt;',
       '>': '&gt;',
       '"': '&quot;',
-      "'": '&#039;'
+      "'": '&#039;',
     };
-    return text.replace(/[&<>"']/g, (m) => map[m] || m);
+    return text.replace(/[&<>"']/g, m => map[m] || m);
   }
 
   private formatBytes(bytes: number): string {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 B';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
   }
 
   private generateDeleteSuccessHTML(): string {
@@ -1050,4 +1067,4 @@ ${paste.oneTimeView ? '' : `
 </body>
 </html>`;
   }
-} 
+}

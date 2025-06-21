@@ -2,8 +2,8 @@
 export class LanguageDetector {
   private static patterns: Record<string, { patterns: RegExp[]; weight: number }> = {
     json: {
-      patterns: [/^\s*[\{\[]/, /"[\w-]+"\s*:\s*/, /^\s*\{.*\}\s*$/s],
-      weight: 0.9
+      patterns: [/^\s*[{[]/, /"[\w-]+"\s*:\s*/, /^\s*\{.*\}\s*$/s],
+      weight: 0.9,
     },
     javascript: {
       patterns: [
@@ -15,9 +15,9 @@ export class LanguageDetector {
         /export\s+(default\s+)?/,
         /console\.(log|error|warn)/,
         /document\./,
-        /window\./
+        /window\./,
       ],
-      weight: 0.8
+      weight: 0.8,
     },
     typescript: {
       patterns: [
@@ -26,9 +26,9 @@ export class LanguageDetector {
         /:\s*(string|number|boolean|object)/,
         /enum\s+\w+/,
         /implements\s+\w+/,
-        /extends\s+\w+/
+        /extends\s+\w+/,
       ],
-      weight: 0.85
+      weight: 0.85,
     },
     python: {
       patterns: [
@@ -39,9 +39,9 @@ export class LanguageDetector {
         /if\s+__name__\s*==\s*['"']__main__['"']/,
         /class\s+\w+.*:/,
         /elif\s+/,
-        /^\s*#.*$/m
+        /^\s*#.*$/m,
       ],
-      weight: 0.8
+      weight: 0.8,
     },
     java: {
       patterns: [
@@ -50,9 +50,9 @@ export class LanguageDetector {
         /System\.out\.print/,
         /import\s+java\./,
         /@Override/,
-        /throws\s+\w+/
+        /throws\s+\w+/,
       ],
-      weight: 0.8
+      weight: 0.8,
     },
     sql: {
       patterns: [
@@ -62,22 +62,13 @@ export class LanguageDetector {
         /UPDATE\s+.*\s+SET/i,
         /DELETE\s+FROM/i,
         /ALTER\s+TABLE/i,
-        /DROP\s+TABLE/i
+        /DROP\s+TABLE/i,
       ],
-      weight: 0.9
+      weight: 0.9,
     },
     shell: {
-      patterns: [
-        /^#!/,
-        /\$\w+/,
-        /echo\s+/,
-        /grep\s+/,
-        /awk\s+/,
-        /sed\s+/,
-        /chmod\s+/,
-        /sudo\s+/
-      ],
-      weight: 0.7
+      patterns: [/^#!/, /\$\w+/, /echo\s+/, /grep\s+/, /awk\s+/, /sed\s+/, /chmod\s+/, /sudo\s+/],
+      weight: 0.7,
     },
     css: {
       patterns: [
@@ -87,9 +78,9 @@ export class LanguageDetector {
         /#\w+\s*\{/,
         /@import/,
         /@keyframes/,
-        /:\s*\w+\s*;/
+        /:\s*\w+\s*;/,
       ],
-      weight: 0.8
+      weight: 0.8,
     },
     html: {
       patterns: [
@@ -100,19 +91,13 @@ export class LanguageDetector {
         /<script/i,
         /<style/i,
         /<!DOCTYPE/i,
-        /<meta/i
+        /<meta/i,
       ],
-      weight: 0.9
+      weight: 0.9,
     },
     xml: {
-      patterns: [
-        /<\?xml/i,
-        /<\/\w+>/,
-        /<\w+[^>]*\/>/,
-        /<!\[CDATA\[/,
-        /xmlns:/
-      ],
-      weight: 0.8
+      patterns: [/<\?xml/i, /<\/\w+>/, /<\w+[^>]*\/>/, /<!\[CDATA\[/, /xmlns:/],
+      weight: 0.8,
     },
     markdown: {
       patterns: [
@@ -122,18 +107,13 @@ export class LanguageDetector {
         /\[.*\]\(.*\)/,
         /```[\w]*\n/,
         /^\s*[-*+]\s+/m,
-        /^\s*\d+\.\s+/m
+        /^\s*\d+\.\s+/m,
       ],
-      weight: 0.7
+      weight: 0.7,
     },
     yaml: {
-      patterns: [
-        /^---$/m,
-        /^\w+:\s*$/m,
-        /^\s*[-*]\s+\w+:/m,
-        /^[\w-]+:\s+[|>]/m
-      ],
-      weight: 0.8
+      patterns: [/^---$/m, /^\w+:\s*$/m, /^\s*[-*]\s+\w+:/m, /^[\w-]+:\s+[|>]/m],
+      weight: 0.8,
     },
     dockerfile: {
       patterns: [
@@ -144,10 +124,10 @@ export class LanguageDetector {
         /^WORKDIR\s+/m,
         /^EXPOSE\s+/m,
         /^CMD\s+/m,
-        /^ENTRYPOINT\s+/m
+        /^ENTRYPOINT\s+/m,
       ],
-      weight: 0.9
-    }
+      weight: 0.9,
+    },
   };
 
   static detect(content: string, filename?: string): string {
@@ -162,14 +142,14 @@ export class LanguageDetector {
 
     const scores: Record<string, number> = {};
     const contentLength = content.length;
-    
+
     // Avoid processing very large files for pattern matching
     const sampleContent = contentLength > 10000 ? content.substring(0, 10000) : content;
-    
+
     for (const [lang, { patterns, weight }] of Object.entries(this.patterns)) {
       let score = 0;
       let matchCount = 0;
-      
+
       for (const pattern of patterns) {
         const matches = sampleContent.match(pattern);
         if (matches) {
@@ -177,22 +157,23 @@ export class LanguageDetector {
           score += matches.length * weight;
         }
       }
-      
+
       // Normalize score by content length and pattern count
       if (matchCount > 0) {
-        scores[lang] = score / Math.max(1, Math.log10(contentLength)) * (matchCount / patterns.length);
+        scores[lang] =
+          (score / Math.max(1, Math.log10(contentLength))) * (matchCount / patterns.length);
       }
     }
-    
+
     if (Object.keys(scores).length === 0) {
       return 'text';
     }
-    
+
     // Return language with highest score
-    const bestMatch = Object.entries(scores).reduce((prev, curr) => 
+    const bestMatch = Object.entries(scores).reduce((prev, curr) =>
       curr[1] > prev[1] ? curr : prev
     );
-    
+
     return bestMatch[0];
   }
 
@@ -203,24 +184,24 @@ export class LanguageDetector {
 
   private static getLanguageFromExtension(ext: string): string | null {
     const extensionMap: Record<string, string> = {
-      'js': 'javascript',
-      'ts': 'typescript',
-      'py': 'python',
-      'java': 'java',
-      'sql': 'sql',
-      'sh': 'shell',
-      'bash': 'shell',
-      'css': 'css',
-      'html': 'html',
-      'htm': 'html',
-      'xml': 'xml',
-      'md': 'markdown',
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'json': 'json',
-      'dockerfile': 'dockerfile'
+      js: 'javascript',
+      ts: 'typescript',
+      py: 'python',
+      java: 'java',
+      sql: 'sql',
+      sh: 'shell',
+      bash: 'shell',
+      css: 'css',
+      html: 'html',
+      htm: 'html',
+      xml: 'xml',
+      md: 'markdown',
+      yml: 'yaml',
+      yaml: 'yaml',
+      json: 'json',
+      dockerfile: 'dockerfile',
     };
-    
+
     return extensionMap[ext] || null;
   }
 }
@@ -251,18 +232,18 @@ export class TimeUtils {
       { regex: /^(\d+)m$/, multiplier: 60 },
       { regex: /^(\d+)h$/, multiplier: 3600 },
       { regex: /^(\d+)d$/, multiplier: 86400 },
-      { regex: /^(\d+)w$/, multiplier: 604800 }
+      { regex: /^(\d+)w$/, multiplier: 604800 },
     ];
 
     const cleaned = timeStr.toLowerCase().trim();
-    
+
     for (const { regex, multiplier } of patterns) {
       const match = cleaned.match(regex);
       if (match) {
         return parseInt(match[1]) * multiplier;
       }
     }
-    
+
     return null;
   }
 
@@ -272,23 +253,23 @@ export class TimeUtils {
   }
 
   // Get time remaining until expiry
-  static getTimeRemaining(expiryDate: string): { 
-    expired: boolean; 
-    seconds: number; 
-    formatted: string 
+  static getTimeRemaining(expiryDate: string): {
+    expired: boolean;
+    seconds: number;
+    formatted: string;
   } {
     const now = Date.now();
     const expiry = new Date(expiryDate).getTime();
     const diff = expiry - now;
-    
+
     if (diff <= 0) {
       return { expired: true, seconds: 0, formatted: 'Expired' };
     }
-    
-    return { 
-      expired: false, 
-      seconds: Math.floor(diff / 1000), 
-      formatted: this.formatExpiry(Math.floor(diff / 1000)) 
+
+    return {
+      expired: false,
+      seconds: Math.floor(diff / 1000),
+      formatted: this.formatExpiry(Math.floor(diff / 1000)),
     };
   }
 }
@@ -302,48 +283,60 @@ export class ResponseUtils {
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     // 'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';",
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   };
 
   private static corsHeaders: Record<string, string> = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Max-Age': '86400'
+    'Access-Control-Max-Age': '86400',
   };
 
-  static json(data: unknown, status = 200, additionalHeaders: Record<string, string> = {}): Response {
+  static json(
+    data: unknown,
+    status = 200,
+    additionalHeaders: Record<string, string> = {}
+  ): Response {
     return new Response(JSON.stringify(data, null, 2), {
       status,
-      headers: { 
+      headers: {
         ...this.securityHeaders,
         ...this.corsHeaders,
         'Content-Type': 'application/json; charset=utf-8',
-        ...additionalHeaders
+        ...additionalHeaders,
       },
     });
   }
 
-  static html(content: string, status = 200, additionalHeaders: Record<string, string> = {}): Response {
+  static html(
+    content: string,
+    status = 200,
+    additionalHeaders: Record<string, string> = {}
+  ): Response {
     return new Response(content, {
       status,
-      headers: { 
+      headers: {
         ...this.securityHeaders,
         ...this.corsHeaders,
         'Content-Type': 'text/html; charset=utf-8',
-        ...additionalHeaders
+        ...additionalHeaders,
       },
     });
   }
 
-  static text(content: string, status = 200, additionalHeaders: Record<string, string> = {}): Response {
+  static text(
+    content: string,
+    status = 200,
+    additionalHeaders: Record<string, string> = {}
+  ): Response {
     return new Response(content, {
       status,
-      headers: { 
+      headers: {
         ...this.securityHeaders,
         ...this.corsHeaders,
         'Content-Type': 'text/plain; charset=utf-8',
-        ...additionalHeaders
+        ...additionalHeaders,
       },
     });
   }
@@ -351,10 +344,10 @@ export class ResponseUtils {
   static css(content: string, status = 200): Response {
     return new Response(content, {
       status,
-      headers: { 
+      headers: {
         'Content-Type': 'text/css; charset=utf-8',
         'Cache-Control': 'public, max-age=31536000',
-        ...this.securityHeaders
+        ...this.securityHeaders,
       },
     });
   }
@@ -362,10 +355,10 @@ export class ResponseUtils {
   static javascript(content: string, status = 200): Response {
     return new Response(content, {
       status,
-      headers: { 
+      headers: {
         'Content-Type': 'application/javascript; charset=utf-8',
         'Cache-Control': 'public, max-age=31536000',
-        ...this.securityHeaders
+        ...this.securityHeaders,
       },
     });
   }
@@ -376,9 +369,9 @@ export class ResponseUtils {
       error: message,
       status,
       timestamp: new Date().toISOString(),
-      ...(details && { details })
+      ...(details && { details }),
     };
-    
+
     return this.json(errorResponse, status);
   }
 
@@ -387,7 +380,7 @@ export class ResponseUtils {
       success: true,
       data,
       ...(message && { message }),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -395,9 +388,9 @@ export class ResponseUtils {
     return new Response(null, {
       status,
       headers: {
-        'Location': url,
-        ...this.securityHeaders
-      }
+        Location: url,
+        ...this.securityHeaders,
+      },
     });
   }
 
@@ -409,9 +402,9 @@ export class ResponseUtils {
     return new Response('Method Not Allowed', {
       status: 405,
       headers: {
-        'Allow': allowed.join(', '),
-        ...this.securityHeaders
-      }
+        Allow: allowed.join(', '),
+        ...this.securityHeaders,
+      },
     });
   }
 
@@ -421,8 +414,8 @@ export class ResponseUtils {
       headers: {
         'Retry-After': retryAfter.toString(),
         ...this.securityHeaders,
-        ...this.corsHeaders
-      }
+        ...this.corsHeaders,
+      },
     });
   }
 
@@ -430,7 +423,7 @@ export class ResponseUtils {
   static corsPrelight(): Response {
     return new Response(null, {
       status: 204,
-      headers: this.corsHeaders
+      headers: this.corsHeaders,
     });
   }
 }
@@ -441,12 +434,12 @@ export class URLUtils {
     try {
       const urlObj = new URL(url);
       const pathParts = urlObj.pathname.split('/').filter(part => part.length > 0);
-      
+
       // Handle /s/{id} format
       if (pathParts.length === 2 && pathParts[0] === 's') {
         return pathParts[1];
       }
-      
+
       return null;
     } catch {
       return null;
@@ -480,10 +473,13 @@ export class SanitizationUtils {
 
   // Sanitize user input for safe display
   static sanitizeUserInput(input: string, maxLength = 1000): string {
-    return input
-      .trim()
-      .substring(0, maxLength)
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ''); // Remove control characters
+    return (
+      input
+        .trim()
+        .substring(0, maxLength)
+        // eslint-disable-next-line no-control-regex
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+    ); // Remove control characters
   }
 
   // Extract client IP with proper header handling
@@ -491,22 +487,22 @@ export class SanitizationUtils {
     const cfConnectingIP = request.headers.get('CF-Connecting-IP');
     const xForwardedFor = request.headers.get('X-Forwarded-For');
     const xRealIP = request.headers.get('X-Real-IP');
-    
+
     // Cloudflare provides the real client IP
     if (cfConnectingIP) {
       return cfConnectingIP;
     }
-    
+
     // Fallback to other headers
     if (xForwardedFor) {
       // X-Forwarded-For can contain multiple IPs, take the first one
       return xForwardedFor.split(',')[0].trim();
     }
-    
+
     if (xRealIP) {
       return xRealIP;
     }
-    
+
     return 'unknown';
   }
 
@@ -531,7 +527,7 @@ export class PerformanceUtils {
 
   // Debounce function calls
   static debounce<T extends (...args: any[]) => void>(
-    func: T, 
+    func: T,
     wait: number
   ): (...args: Parameters<T>) => void {
     let timeout: number | undefined;
@@ -543,7 +539,7 @@ export class PerformanceUtils {
 
   // Throttle function calls
   static throttle<T extends (...args: any[]) => void>(
-    func: T, 
+    func: T,
     limit: number
   ): (...args: Parameters<T>) => void {
     let inThrottle: boolean;
@@ -551,7 +547,7 @@ export class PerformanceUtils {
       if (!inThrottle) {
         func(...args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
+        setTimeout(() => (inThrottle = false), limit);
       }
     };
   }
@@ -560,7 +556,7 @@ export class PerformanceUtils {
   static minifyHTML(html: string): string {
     // First, extract and preserve content inside <pre> tags
     const preTags: string[] = [];
-    let htmlWithPlaceholders = html.replace(/<pre[^>]*>[\s\S]*?<\/pre>/g, (match) => {
+    let htmlWithPlaceholders = html.replace(/<pre[^>]*>[\s\S]*?<\/pre>/g, match => {
       const index = preTags.length;
       preTags.push(match);
       return `__PRE_PLACEHOLDER_${index}__`;
@@ -588,31 +584,31 @@ export class PerformanceUtils {
   // Add performance headers to responses
   static addPerformanceHeaders(response: Response): Response {
     const headers = new Headers(response.headers);
-    
+
     // Enable compression
     headers.set('Content-Encoding', 'gzip');
-    
+
     // Cache static content
     if (response.url && (response.url.includes('/styles/') || response.url.includes('/scripts/'))) {
       headers.set('Cache-Control', 'public, max-age=31536000, immutable'); // 1 year
     } else {
       headers.set('Cache-Control', 'no-cache, must-revalidate'); // Dynamic content
     }
-    
+
     // Security and performance headers
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('X-Frame-Options', 'DENY');
     headers.set('X-XSS-Protection', '1; mode=block');
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-    
+
     // Performance hints
     headers.set('Server-Timing', 'cloudflare');
     headers.set('Accept-Encoding', 'gzip, deflate, br');
-    
+
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers
+      headers,
     });
   }
 
@@ -640,4 +636,4 @@ export class PerformanceUtils {
       </style>
     `;
   }
-} 
+}

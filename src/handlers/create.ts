@@ -1,6 +1,6 @@
 import { IStorage, CreatePasteInput } from '../core/storage';
 import { IAnalytics } from '../core/analytics';
-import { SecurityManager, ValidationResult } from '../core/security';
+import { SecurityManager } from '../core/security';
 import { LanguageDetector, TimeUtils, ResponseUtils, SanitizationUtils } from '../core/utils';
 import { CONFIG, ConfigValidator } from '../config/constants';
 
@@ -44,7 +44,7 @@ export class CreateHandler {
   async handle(request: Request): Promise<Response> {
     try {
       const clientIP = SanitizationUtils.extractClientIP(request);
-      
+
       // Rate limiting check (if enabled)
       if (CONFIG.SECURITY.RATE_LIMITING_ENABLED) {
         const rateLimitResult = this.security.validateRateLimit(clientIP, 'create');
@@ -68,7 +68,11 @@ export class CreateHandler {
       }
 
       // Validate expiry
-      const expiryValidation = this.security.validateExpiry(expirySeconds, CONFIG.MIN_EXPIRY, CONFIG.MAX_EXPIRY);
+      const expiryValidation = this.security.validateExpiry(
+        expirySeconds,
+        CONFIG.MIN_EXPIRY,
+        CONFIG.MAX_EXPIRY
+      );
       if (!expiryValidation.valid) {
         return ResponseUtils.error(expiryValidation.error!, 400);
       }
@@ -118,10 +122,9 @@ export class CreateHandler {
       };
 
       return ResponseUtils.success(response, 'Paste created successfully');
-
     } catch (error) {
       console.error('CreateHandler error:', error);
-      
+
       // Track error in analytics
       try {
         const clientIP = SanitizationUtils.extractClientIP(request);
@@ -129,7 +132,7 @@ export class CreateHandler {
       } catch {
         // Ignore analytics errors
       }
-      
+
       return ResponseUtils.error('Failed to create paste', 500);
     }
   }
@@ -149,10 +152,13 @@ export class CreateHandler {
       // Check content type
       const contentType = request.headers.get('content-type');
       if (!contentType?.includes('application/json')) {
-        return { success: false, error: 'Content-Type must be application/json' };
+        return {
+          success: false,
+          error: 'Content-Type must be application/json',
+        };
       }
 
-      const body = await request.json() as CreatePasteRequest;
+      const body = (await request.json()) as CreatePasteRequest;
 
       // Validate required fields
       if (!body.content) {
@@ -162,7 +168,7 @@ export class CreateHandler {
       // Sanitize and validate inputs
       const title = SanitizationUtils.sanitizeUserInput(body.title || '', CONFIG.MAX_TITLE_LENGTH);
       const content = body.content.trim();
-      
+
       if (content.length === 0) {
         return { success: false, error: 'Content cannot be empty' };
       }
@@ -176,13 +182,16 @@ export class CreateHandler {
 
       // Determine expiry
       let expirySeconds = 0;
-      
+
       if (body.expires) {
         // New format: '1h', '1d', etc.
         if (ConfigValidator.validateExpiry(body.expires)) {
           expirySeconds = ConfigValidator.getExpirySeconds(body.expires);
         } else {
-          return { success: false, error: `Invalid expiry option: ${body.expires}` };
+          return {
+            success: false,
+            error: `Invalid expiry option: ${body.expires}`,
+          };
         }
       } else if (body.expires_in) {
         // Legacy format: seconds
@@ -203,9 +212,8 @@ export class CreateHandler {
           language,
           expirySeconds,
           oneTimeView,
-        }
+        },
       };
-
     } catch (error) {
       console.error('Failed to parse request:', error);
       return { success: false, error: 'Invalid JSON in request body' };
@@ -221,7 +229,7 @@ export class CreateHandler {
   async handleFormData(request: Request): Promise<Response> {
     try {
       const formData = await request.formData();
-      
+
       const createRequest: CreatePasteRequest = {
         title: formData.get('title')?.toString() || '',
         content: formData.get('content')?.toString() || '',
@@ -237,26 +245,27 @@ export class CreateHandler {
           'content-type': 'application/json',
           'user-agent': request.headers.get('user-agent') || '',
           'x-forwarded-for': request.headers.get('x-forwarded-for') || '',
-          'cf-connecting-ip': request.headers.get('cf-connecting-ip') || ''
+          'cf-connecting-ip': request.headers.get('cf-connecting-ip') || '',
         },
-        body: JSON.stringify(createRequest)
+        body: JSON.stringify(createRequest),
       });
 
       const result = await this.handle(jsonRequest);
-      
+
       // If this is a form submission (not AJAX), redirect to success page
       if (formData.get('form_submit')) {
-        const resultJson = await result.json() as any;
+        const resultJson = (await result.json()) as any;
         if (resultJson.success && resultJson.data) {
           const baseUrl = this.getBaseUrl(request);
           const successUrl = `${baseUrl}/success?url=${encodeURIComponent(resultJson.data.shareUrl)}&id=${resultJson.data.id}`;
           return new Response(null, {
             status: 302,
-            headers: { 'Location': successUrl }
+            headers: { Location: successUrl },
           });
         } else {
           // Return error page for form submissions
-          return new Response(`
+          return new Response(
+            `
             <html>
               <head><title>Error</title></head>
               <body>
@@ -265,15 +274,16 @@ export class CreateHandler {
                 <a href="/">← Go Back</a>
               </body>
             </html>
-          `, {
-            status: 400,
-            headers: { 'content-type': 'text/html' }
-          });
+          `,
+            {
+              status: 400,
+              headers: { 'content-type': 'text/html' },
+            }
+          );
         }
       }
 
       return result;
-
     } catch (error) {
       console.error('Failed to handle form data:', error);
       return ResponseUtils.error('Invalid form data', 400);
@@ -287,26 +297,26 @@ export class CreateHandler {
         type: 'string',
         optional: true,
         maxLength: CONFIG.MAX_TITLE_LENGTH,
-        description: 'Optional title for the paste'
+        description: 'Optional title for the paste',
       },
       content: {
         type: 'string',
         required: true,
         maxLength: CONFIG.MAX_CONTENT_SIZE,
-        description: 'The content to be shared'
+        description: 'The content to be shared',
       },
       language: {
         type: 'string',
         optional: true,
         enum: CONFIG.SUPPORTED_LANGUAGES,
-        description: 'Programming language for syntax highlighting'
+        description: 'Programming language for syntax highlighting',
       },
       expires: {
         type: 'string',
         optional: true,
         enum: Object.keys(CONFIG.EXPIRY_OPTIONS),
-        description: 'When the paste should expire'
-      }
+        description: 'When the paste should expire',
+      },
     };
   }
 
@@ -314,7 +324,7 @@ export class CreateHandler {
     return Object.entries(CONFIG.EXPIRY_OPTIONS).map(([key, seconds]) => ({
       value: key,
       label: TimeUtils.formatExpiry(seconds),
-      seconds
+      seconds,
     }));
   }
-} 
+}

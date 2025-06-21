@@ -39,8 +39,17 @@ export interface AnalyticsConfig {
 }
 
 export interface IAnalytics {
-  trackPasteCreated(language: string, size: number, clientIP: string, metadata?: Partial<AnalyticsEvent>): Promise<void>;
-  trackPasteViewed(pasteId: string, clientIP: string, metadata?: Partial<AnalyticsEvent>): Promise<void>;
+  trackPasteCreated(
+    language: string,
+    size: number,
+    clientIP: string,
+    metadata?: Partial<AnalyticsEvent>
+  ): Promise<void>;
+  trackPasteViewed(
+    pasteId: string,
+    clientIP: string,
+    metadata?: Partial<AnalyticsEvent>
+  ): Promise<void>;
   trackPasteExpired(pasteId: string): Promise<void>;
   trackError(error: string, clientIP?: string, metadata?: Partial<AnalyticsEvent>): Promise<void>;
   getStats(days?: number): Promise<AnalyticsStats>;
@@ -49,7 +58,10 @@ export interface IAnalytics {
 }
 
 export class AnalyticsError extends Error {
-  constructor(message: string, public code: string) {
+  constructor(
+    message: string,
+    public code: string
+  ) {
     super(message);
     this.name = 'AnalyticsError';
   }
@@ -67,14 +79,14 @@ export class InMemoryAnalytics implements IAnalytics {
       trackUserAgent: false,
       aggregateHourly: true,
       maxStoredEvents: 10000,
-      ...config
+      ...config,
     };
   }
 
   async trackPasteCreated(
-    language: string, 
-    size: number, 
-    clientIP: string, 
+    language: string,
+    size: number,
+    clientIP: string,
     metadata: Partial<AnalyticsEvent> = {}
   ): Promise<void> {
     const event: AnalyticsEvent = {
@@ -83,15 +95,15 @@ export class InMemoryAnalytics implements IAnalytics {
       clientIP: this.hashIP(clientIP),
       language,
       size,
-      ...metadata
+      ...metadata,
     };
-    
+
     this.addEvent(event);
   }
 
   async trackPasteViewed(
-    pasteId: string, 
-    clientIP: string, 
+    pasteId: string,
+    clientIP: string,
     metadata: Partial<AnalyticsEvent> = {}
   ): Promise<void> {
     const event: AnalyticsEvent = {
@@ -99,9 +111,9 @@ export class InMemoryAnalytics implements IAnalytics {
       timestamp: new Date().toISOString(),
       clientIP: this.hashIP(clientIP),
       pasteId: this.hashId(pasteId),
-      ...metadata
+      ...metadata,
     };
-    
+
     this.addEvent(event);
   }
 
@@ -109,38 +121,36 @@ export class InMemoryAnalytics implements IAnalytics {
     const event: AnalyticsEvent = {
       type: 'paste_expired',
       timestamp: new Date().toISOString(),
-      pasteId: this.hashId(pasteId)
+      pasteId: this.hashId(pasteId),
     };
-    
+
     this.addEvent(event);
   }
 
   async trackError(
-    error: string, 
-    clientIP?: string, 
+    error: string,
+    clientIP?: string,
     metadata: Partial<AnalyticsEvent> = {}
   ): Promise<void> {
     const event: AnalyticsEvent = {
       type: 'error',
       timestamp: new Date().toISOString(),
       error,
-      ...metadata
+      ...metadata,
     };
-    
+
     if (clientIP) {
       event.clientIP = this.hashIP(clientIP);
     }
-    
+
     this.addEvent(event);
   }
 
   async getStats(days = 7): Promise<AnalyticsStats> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
-    
-    const recentEvents = this.events.filter(
-      event => new Date(event.timestamp) >= cutoffDate
-    );
+
+    const recentEvents = this.events.filter(event => new Date(event.timestamp) >= cutoffDate);
 
     const stats = this.calculateStats(recentEvents);
     return stats;
@@ -148,20 +158,18 @@ export class InMemoryAnalytics implements IAnalytics {
 
   private addEvent(event: AnalyticsEvent): void {
     this.events.push(event);
-    
+
     // Cleanup old events if we exceed max storage
     if (this.events.length > this.config.maxStoredEvents) {
       const cutoff = this.events.length - this.config.maxStoredEvents;
       this.events = this.events.slice(cutoff);
     }
-    
+
     // Remove events older than retention period
     const retentionDate = new Date();
     retentionDate.setDate(retentionDate.getDate() - this.config.retentionDays);
-    
-    this.events = this.events.filter(
-      event => new Date(event.timestamp) >= retentionDate
-    );
+
+    this.events = this.events.filter(event => new Date(event.timestamp) >= retentionDate);
   }
 
   private calculateStats(events: AnalyticsEvent[]): AnalyticsStats {
@@ -175,7 +183,7 @@ export class InMemoryAnalytics implements IAnalytics {
       dailyStats: {},
       hourlyStats: {},
       topLanguages: [],
-      avgPasteSize: 0
+      avgPasteSize: 0,
     };
 
     // Count unique IPs for visitors
@@ -213,11 +221,11 @@ export class InMemoryAnalytics implements IAnalytics {
           if (this.config.aggregateHourly && hourStats) {
             hourStats.shares++;
           }
-          
+
           if (event.language) {
             languageCounts[event.language] = (languageCounts[event.language] || 0) + 1;
           }
-          
+
           if (event.size) {
             pasteSizes.push(event.size);
           }
@@ -247,7 +255,7 @@ export class InMemoryAnalytics implements IAnalytics {
     // Set calculated values
     stats.uniqueVisitors = uniqueIPs.size;
     stats.languages = languageCounts;
-    
+
     if (pasteSizes.length > 0) {
       stats.avgPasteSize = Math.round(
         pasteSizes.reduce((sum, size) => sum + size, 0) / pasteSizes.length
@@ -260,7 +268,7 @@ export class InMemoryAnalytics implements IAnalytics {
       .map(([language, count]) => ({
         language,
         count,
-        percentage: Math.round((count / totalLanguageUses) * 100)
+        percentage: Math.round((count / totalLanguageUses) * 100),
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
@@ -274,11 +282,13 @@ export class InMemoryAnalytics implements IAnalytics {
   private calculateTrends(events: AnalyticsEvent[]): AnalyticsStats['trends'] {
     const now = new Date();
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    
+
     const todayEvents = events.filter(e => new Date(e.timestamp) >= yesterday);
     const yesterdayEvents = events.filter(e => {
       const eventDate = new Date(e.timestamp);
-      return eventDate >= new Date(yesterday.getTime() - 24 * 60 * 60 * 1000) && eventDate < yesterday;
+      return (
+        eventDate >= new Date(yesterday.getTime() - 24 * 60 * 60 * 1000) && eventDate < yesterday
+      );
     });
 
     const todayShares = todayEvents.filter(e => e.type === 'paste_created').length;
@@ -286,8 +296,10 @@ export class InMemoryAnalytics implements IAnalytics {
     const todayViews = todayEvents.filter(e => e.type === 'paste_viewed').length;
     const yesterdayViews = yesterdayEvents.filter(e => e.type === 'paste_viewed').length;
 
-    const sharesGrowth = yesterdayShares > 0 ? ((todayShares - yesterdayShares) / yesterdayShares) * 100 : 0;
-    const viewsGrowth = yesterdayViews > 0 ? ((todayViews - yesterdayViews) / yesterdayViews) * 100 : 0;
+    const sharesGrowth =
+      yesterdayShares > 0 ? ((todayShares - yesterdayShares) / yesterdayShares) * 100 : 0;
+    const viewsGrowth =
+      yesterdayViews > 0 ? ((todayViews - yesterdayViews) / yesterdayViews) * 100 : 0;
 
     // Find popular hours (hours with most activity)
     const hourlyActivity: Record<number, number> = {};
@@ -297,14 +309,14 @@ export class InMemoryAnalytics implements IAnalytics {
     }
 
     const popularHours = Object.entries(hourlyActivity)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
       .map(([hour]) => parseInt(hour));
 
     return {
       sharesGrowth: Math.round(sharesGrowth),
       viewsGrowth: Math.round(viewsGrowth),
-      popularHours
+      popularHours,
     };
   }
 
@@ -313,7 +325,7 @@ export class InMemoryAnalytics implements IAnalytics {
     let hash = 0;
     for (let i = 0; i < ip.length; i++) {
       const char = ip.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return `ip_${Math.abs(hash).toString(16)}`;
@@ -338,31 +350,33 @@ export class KVAnalytics implements IAnalytics {
       trackUserAgent: false,
       aggregateHourly: true,
       maxStoredEvents: 50000,
-      ...config
+      ...config,
     };
   }
 
   async trackPasteCreated(
-    language: string, 
-    size: number, 
-    clientIP: string, 
+    language: string,
+    size: number,
+    clientIP: string,
     metadata: Partial<AnalyticsEvent> = {}
   ): Promise<void> {
     try {
       const today = this.getDateKey();
       const hour = this.getHourKey();
-      
+
       // Increment daily counters
       await Promise.all([
         this.incrementCounter(`analytics:daily:${today}:shares`),
         this.incrementCounter(`analytics:daily:${today}:total`),
         this.incrementCounter(`analytics:language:${language}`),
-        this.incrementCounter(`analytics:total:shares`),
-        this.config.aggregateHourly ? this.incrementCounter(`analytics:hourly:${hour}:shares`) : Promise.resolve()
+        this.incrementCounter('analytics:total:shares'),
+        this.config.aggregateHourly
+          ? this.incrementCounter(`analytics:hourly:${hour}:shares`)
+          : Promise.resolve(),
       ]);
 
       // Track paste size (store sample for average calculation)
-      await this.addToSample(`analytics:sizes`, size.toString());
+      await this.addToSample('analytics:sizes', size.toString());
 
       // Store event for detailed analytics (with TTL)
       const event: AnalyticsEvent = {
@@ -370,13 +384,14 @@ export class KVAnalytics implements IAnalytics {
         timestamp: new Date().toISOString(),
         language,
         size,
-        ...metadata
+        ...metadata,
       };
-      
+
       const eventKey = `analytics:event:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
       const ttlSeconds = this.config.retentionDays * 24 * 60 * 60;
-      await this.kv.put(eventKey, JSON.stringify(event), { expirationTtl: ttlSeconds });
-      
+      await this.kv.put(eventKey, JSON.stringify(event), {
+        expirationTtl: ttlSeconds,
+      });
     } catch (error) {
       console.error('Failed to track paste creation:', error);
       throw new AnalyticsError('Failed to track paste creation', 'TRACK_CREATE_FAILED');
@@ -384,34 +399,37 @@ export class KVAnalytics implements IAnalytics {
   }
 
   async trackPasteViewed(
-    pasteId: string, 
-    clientIP: string, 
+    pasteId: string,
+    clientIP: string,
     metadata: Partial<AnalyticsEvent> = {}
   ): Promise<void> {
     try {
       const today = this.getDateKey();
       const hour = this.getHourKey();
-      
+
       // Increment daily counters
       await Promise.all([
         this.incrementCounter(`analytics:daily:${today}:views`),
         this.incrementCounter(`analytics:daily:${today}:total`),
-        this.incrementCounter(`analytics:total:views`),
-        this.config.aggregateHourly ? this.incrementCounter(`analytics:hourly:${hour}:views`) : Promise.resolve()
+        this.incrementCounter('analytics:total:views'),
+        this.config.aggregateHourly
+          ? this.incrementCounter(`analytics:hourly:${hour}:views`)
+          : Promise.resolve(),
       ]);
 
       // Store event
       const event: AnalyticsEvent = {
         type: 'paste_viewed',
         timestamp: new Date().toISOString(),
-        pasteId: pasteId.substring(0, 4) + '***', // Partial ID for privacy
-        ...metadata
+        pasteId: `${pasteId.substring(0, 4)}***`, // Partial ID for privacy
+        ...metadata,
       };
-      
+
       const eventKey = `analytics:event:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
       const ttlSeconds = this.config.retentionDays * 24 * 60 * 60;
-      await this.kv.put(eventKey, JSON.stringify(event), { expirationTtl: ttlSeconds });
-      
+      await this.kv.put(eventKey, JSON.stringify(event), {
+        expirationTtl: ttlSeconds,
+      });
     } catch (error) {
       console.error('Failed to track paste view:', error);
       throw new AnalyticsError('Failed to track paste view', 'TRACK_VIEW_FAILED');
@@ -420,46 +438,48 @@ export class KVAnalytics implements IAnalytics {
 
   async trackPasteExpired(pasteId: string): Promise<void> {
     try {
-      await this.incrementCounter(`analytics:total:expired`);
-      
+      await this.incrementCounter('analytics:total:expired');
+
       const event: AnalyticsEvent = {
         type: 'paste_expired',
         timestamp: new Date().toISOString(),
-        pasteId: pasteId.substring(0, 4) + '***'
+        pasteId: `${pasteId.substring(0, 4)}***`,
       };
-      
+
       const eventKey = `analytics:event:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
       const ttlSeconds = this.config.retentionDays * 24 * 60 * 60;
-      await this.kv.put(eventKey, JSON.stringify(event), { expirationTtl: ttlSeconds });
-      
+      await this.kv.put(eventKey, JSON.stringify(event), {
+        expirationTtl: ttlSeconds,
+      });
     } catch (error) {
       console.error('Failed to track paste expiry:', error);
     }
   }
 
   async trackError(
-    error: string, 
-    clientIP?: string, 
+    error: string,
+    clientIP?: string,
     metadata: Partial<AnalyticsEvent> = {}
   ): Promise<void> {
     try {
       const today = this.getDateKey();
       await Promise.all([
         this.incrementCounter(`analytics:daily:${today}:errors`),
-        this.incrementCounter(`analytics:total:errors`)
+        this.incrementCounter('analytics:total:errors'),
       ]);
 
       const event: AnalyticsEvent = {
         type: 'error',
         timestamp: new Date().toISOString(),
         error,
-        ...metadata
+        ...metadata,
       };
-      
+
       const eventKey = `analytics:event:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
       const ttlSeconds = this.config.retentionDays * 24 * 60 * 60;
-      await this.kv.put(eventKey, JSON.stringify(event), { expirationTtl: ttlSeconds });
-      
+      await this.kv.put(eventKey, JSON.stringify(event), {
+        expirationTtl: ttlSeconds,
+      });
     } catch (error) {
       console.error('Failed to track error:', error);
     }
@@ -472,15 +492,15 @@ export class KVAnalytics implements IAnalytics {
         this.getCounter('analytics:total:shares'),
         this.getCounter('analytics:total:views'),
         this.getCounter('analytics:total:expired'),
-        this.getCounter('analytics:total:errors')
+        this.getCounter('analytics:total:errors'),
       ]);
 
       // Get language stats
       const languages = await this.getLanguageStats();
-      
+
       // Get daily stats for the specified period
       const dailyStats = await this.getDailyStats(days);
-      
+
       // Get sample sizes for average calculation
       const avgPasteSize = await this.getAveragePasteSize();
 
@@ -492,7 +512,7 @@ export class KVAnalytics implements IAnalytics {
         languages,
         dailyStats,
         topLanguages: this.calculateTopLanguages(languages),
-        avgPasteSize
+        avgPasteSize,
       };
 
       return stats;
@@ -518,23 +538,23 @@ export class KVAnalytics implements IAnalytics {
     // Store up to 1000 samples for average calculation
     const current = await this.kv.get(key);
     let samples: string[] = current ? JSON.parse(current) : [];
-    
+
     samples.push(value);
     if (samples.length > 1000) {
       samples = samples.slice(-1000); // Keep only last 1000 samples
     }
-    
+
     await this.kv.put(key, JSON.stringify(samples));
   }
 
   private async getLanguageStats(): Promise<Record<string, number>> {
     const languages: Record<string, number> = {};
-    
+
     // This is a simplified version - in practice, you'd need to iterate through KV keys
     // with a prefix pattern like "analytics:language:"
     try {
       const list = await this.kv.list({ prefix: 'analytics:language:' });
-      
+
       for (const key of list.keys) {
         const language = key.name.replace('analytics:language:', '');
         const count = await this.getCounter(key.name);
@@ -545,27 +565,29 @@ export class KVAnalytics implements IAnalytics {
     } catch (error) {
       console.error('Failed to get language stats:', error);
     }
-    
+
     return languages;
   }
 
-  private async getDailyStats(days: number): Promise<Record<string, { shares: number; views: number; errors?: number }>> {
+  private async getDailyStats(
+    days: number
+  ): Promise<Record<string, { shares: number; views: number; errors?: number }>> {
     const dailyStats: Record<string, { shares: number; views: number; errors?: number }> = {};
-    
+
     for (let i = 0; i < days; i++) {
       const date = new Date();
       date.setDate(date.getDate() - i);
       const dateKey = date.toISOString().split('T')[0];
-      
+
       const [shares, views, errors] = await Promise.all([
         this.getCounter(`analytics:daily:${dateKey}:shares`),
         this.getCounter(`analytics:daily:${dateKey}:views`),
-        this.getCounter(`analytics:daily:${dateKey}:errors`)
+        this.getCounter(`analytics:daily:${dateKey}:errors`),
       ]);
-      
+
       dailyStats[dateKey] = { shares, views, errors };
     }
-    
+
     return dailyStats;
   }
 
@@ -573,10 +595,10 @@ export class KVAnalytics implements IAnalytics {
     try {
       const samplesData = await this.kv.get('analytics:sizes');
       if (!samplesData) return 0;
-      
+
       const samples: string[] = JSON.parse(samplesData);
       if (samples.length === 0) return 0;
-      
+
       const total = samples.reduce((sum, size) => sum + parseInt(size), 0);
       return Math.round(total / samples.length);
     } catch {
@@ -584,14 +606,16 @@ export class KVAnalytics implements IAnalytics {
     }
   }
 
-  private calculateTopLanguages(languages: Record<string, number>): Array<{ language: string; count: number; percentage: number }> {
+  private calculateTopLanguages(
+    languages: Record<string, number>
+  ): Array<{ language: string; count: number; percentage: number }> {
     const total = Object.values(languages).reduce((sum, count) => sum + count, 0);
-    
+
     return Object.entries(languages)
       .map(([language, count]) => ({
         language,
         count,
-        percentage: total > 0 ? Math.round((count / total) * 100) : 0
+        percentage: total > 0 ? Math.round((count / total) * 100) : 0,
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
@@ -612,4 +636,4 @@ export class KVAnalytics implements IAnalytics {
     // This is a placeholder for cleaning up old analytics data
     console.log(`Cleaning up analytics data older than ${olderThanDays} days`);
   }
-} 
+}

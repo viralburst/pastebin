@@ -12,7 +12,10 @@ export interface SecurityConfig {
 }
 
 export class SecurityError extends Error {
-  constructor(message: string, public code: string) {
+  constructor(
+    message: string,
+    public code: string
+  ) {
     super(message);
     this.name = 'SecurityError';
   }
@@ -20,22 +23,54 @@ export class SecurityError extends Error {
 
 export class SecurityManager {
   private config: SecurityConfig;
-  
+
   // Enhanced suspicious patterns with better categorization
-  private suspiciousPatterns: { name: string; pattern: RegExp; severity: 'high' | 'medium' | 'low' }[] = [
+  private suspiciousPatterns: {
+    name: string;
+    pattern: RegExp;
+    severity: 'high' | 'medium' | 'low';
+  }[] = [
     // API Keys and tokens
-    { name: 'api_key', pattern: /(api[_-]?key|token|secret)[\s"']*[:=][\s"']*[a-zA-Z0-9]{20,}/i, severity: 'high' },
+    {
+      name: 'api_key',
+      pattern: /(api[_-]?key|token|secret)[\s"']*[:=][\s"']*[a-zA-Z0-9]{20,}/i,
+      severity: 'high',
+    },
     { name: 'aws_key', pattern: /AKIA[0-9A-Z]{16}/, severity: 'high' },
     { name: 'openai_key', pattern: /sk-[a-zA-Z0-9]{48}/i, severity: 'high' },
-    { name: 'github_token', pattern: /gh[pousr]_[A-Za-z0-9_]{36,255}/, severity: 'high' },
-    { name: 'jwt_token', pattern: /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/, severity: 'medium' },
+    {
+      name: 'github_token',
+      pattern: /gh[pousr]_[A-Za-z0-9_]{36,255}/,
+      severity: 'high',
+    },
+    {
+      name: 'jwt_token',
+      pattern: /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/,
+      severity: 'medium',
+    },
     // Credentials
-    { name: 'password', pattern: /(password|pwd|passwd)\s*[:=]\s*["']?[^\s"']{8,}/i, severity: 'medium' },
-    { name: 'connection_string', pattern: /(mongodb|postgres|mysql):\/\/[^\s]+/i, severity: 'high' },
+    {
+      name: 'password',
+      pattern: /(password|pwd|passwd)\s*[:=]\s*["']?[^\s"']{8,}/i,
+      severity: 'medium',
+    },
+    {
+      name: 'connection_string',
+      pattern: /(mongodb|postgres|mysql):\/\/[^\s]+/i,
+      severity: 'high',
+    },
     // PII patterns
     { name: 'ssn', pattern: /\b\d{3}-?\d{2}-?\d{4}\b/, severity: 'high' },
-    { name: 'credit_card', pattern: /\b(?:\d{4}[\s-]?){3}\d{4}\b/, severity: 'high' },
-    { name: 'email_bulk', pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\s*[,;\n]){5,}/g, severity: 'medium' },
+    {
+      name: 'credit_card',
+      pattern: /\b(?:\d{4}[\s-]?){3}\d{4}\b/,
+      severity: 'high',
+    },
+    {
+      name: 'email_bulk',
+      pattern: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\s*[,;\n]){5,}/g,
+      severity: 'medium',
+    },
   ];
 
   constructor(config: Partial<SecurityConfig> = {}) {
@@ -44,14 +79,14 @@ export class SecurityManager {
       maxTitleLength: 200,
       suspiciousPatternsEnabled: true,
       strictValidation: false,
-      ...config
+      ...config,
     };
   }
 
   // Enhanced content validation with detailed feedback
   validateContent(content: string, title = ''): ValidationResult {
     const warnings: string[] = [];
-    
+
     // Basic validation
     if (!content || content.trim().length === 0) {
       return { valid: false, error: 'Content cannot be empty' };
@@ -61,17 +96,17 @@ export class SecurityManager {
     const encoder = new TextEncoder();
     const contentSize = encoder.encode(content).length;
     if (contentSize > this.config.maxContentSize) {
-      return { 
-        valid: false, 
-        error: `Content too large (${this.formatBytes(contentSize)} / ${this.formatBytes(this.config.maxContentSize)} max)` 
+      return {
+        valid: false,
+        error: `Content too large (${this.formatBytes(contentSize)} / ${this.formatBytes(this.config.maxContentSize)} max)`,
       };
     }
 
     // Title validation
     if (title.length > this.config.maxTitleLength) {
-      return { 
-        valid: false, 
-        error: `Title too long (${title.length} / ${this.config.maxTitleLength} max characters)` 
+      return {
+        valid: false,
+        error: `Title too long (${title.length} / ${this.config.maxTitleLength} max characters)`,
       };
     }
 
@@ -112,13 +147,17 @@ export class SecurityManager {
   private checkSuspiciousContent(content: string, title: string): string[] {
     const warnings: string[] = [];
     const fullText = `${title} ${content}`;
-    const detectedPatterns: { name: string; severity: string; count: number }[] = [];
+    const detectedPatterns: {
+      name: string;
+      severity: string;
+      count: number;
+    }[] = [];
 
     for (const { name, pattern, severity } of this.suspiciousPatterns) {
       const matches = fullText.match(new RegExp(pattern, 'g'));
       if (matches) {
         detectedPatterns.push({ name, severity, count: matches.length });
-        
+
         // Log security event with structured data (without exposing content)
         this.logSecurityEvent({
           event: 'suspicious_content_detected',
@@ -128,9 +167,9 @@ export class SecurityManager {
           contentLength: content.length,
           timestamp: new Date().toISOString(),
           // Include hash of first 100 chars for correlation without exposing full content
-          contentHash: this.hashString(content.substring(0, 100))
+          contentHash: this.hashString(content.substring(0, 100)),
         });
-        
+
         if (severity === 'high') {
           warnings.push(`Potentially sensitive ${name.replace('_', ' ')} detected`);
         }
@@ -150,9 +189,9 @@ export class SecurityManager {
       "'": '&#039;',
       '/': '&#x2F;',
       '`': '&#x60;',
-      '=': '&#x3D;'
+      '=': '&#x3D;',
     };
-    return text.replace(/[&<>"'`=/]/g, (m) => map[m] || m);
+    return text.replace(/[&<>"'`=/]/g, m => map[m] || m);
   }
 
   // Sanitize title for safe display
@@ -166,7 +205,7 @@ export class SecurityManager {
     let hash = 0;
     for (let i = 0; i < input.length; i++) {
       const char = input.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(16).substring(0, 8);
@@ -178,17 +217,20 @@ export class SecurityManager {
     const data = encoder.encode(input);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+    return hashArray
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('')
+      .substring(0, 16);
   }
 
   // Validate language input
   validateLanguage(language: string, supportedLanguages: string[]): string {
     const cleanLang = language.toLowerCase().trim();
-    
+
     if (!cleanLang || !supportedLanguages.includes(cleanLang)) {
       return 'text'; // Default to text
     }
-    
+
     return cleanLang;
   }
 
@@ -197,15 +239,21 @@ export class SecurityManager {
     if (isNaN(expirySeconds) || expirySeconds < 0) {
       return { valid: false, error: 'Invalid expiry time' };
     }
-    
+
     if (expirySeconds < minExpiry) {
-      return { valid: false, error: `Minimum expiry time is ${this.formatDuration(minExpiry)}` };
+      return {
+        valid: false,
+        error: `Minimum expiry time is ${this.formatDuration(minExpiry)}`,
+      };
     }
-    
+
     if (expirySeconds > maxExpiry) {
-      return { valid: false, error: `Maximum expiry time is ${this.formatDuration(maxExpiry)}` };
+      return {
+        valid: false,
+        error: `Maximum expiry time is ${this.formatDuration(maxExpiry)}`,
+      };
     }
-    
+
     return { valid: true };
   }
 
@@ -214,7 +262,7 @@ export class SecurityManager {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 B';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
   }
 
   private formatDuration(seconds: number): string {
@@ -225,11 +273,13 @@ export class SecurityManager {
 
   private logSecurityEvent(event: any): void {
     // Structured logging for security events
-    console.warn(JSON.stringify({
-      ...event,
-      level: 'SECURITY',
-      source: 'SecurityManager'
-    }));
+    console.warn(
+      JSON.stringify({
+        ...event,
+        level: 'SECURITY',
+        source: 'SecurityManager',
+      })
+    );
   }
 
   // Rate limiting helper (placeholder - actual implementation would use Durable Objects)
@@ -243,10 +293,18 @@ export class SecurityManager {
   // Content type detection for additional security
   detectContentType(content: string): { type: string; confidence: number } {
     const patterns = [
-      { type: 'json', pattern: /^\s*[\{\[]/, confidence: 0.8 },
+      { type: 'json', pattern: /^\s*[{[]/, confidence: 0.8 },
       { type: 'xml', pattern: /^\s*<\?xml|^\s*<[a-zA-Z]/, confidence: 0.7 },
-      { type: 'code', pattern: /function\s+\w+|class\s+\w+|import\s+/, confidence: 0.6 },
-      { type: 'sql', pattern: /SELECT\s+.*FROM|INSERT\s+INTO|CREATE\s+TABLE/i, confidence: 0.7 },
+      {
+        type: 'code',
+        pattern: /function\s+\w+|class\s+\w+|import\s+/,
+        confidence: 0.6,
+      },
+      {
+        type: 'sql',
+        pattern: /SELECT\s+.*FROM|INSERT\s+INTO|CREATE\s+TABLE/i,
+        confidence: 0.7,
+      },
       { type: 'config', pattern: /=.*\n.*=|^[a-zA-Z_]+\s*=/, confidence: 0.5 },
     ];
 
@@ -258,4 +316,4 @@ export class SecurityManager {
 
     return { type: 'text', confidence: 1.0 };
   }
-} 
+}

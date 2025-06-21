@@ -3,12 +3,12 @@ export interface PasteData {
   title: string;
   content: string;
   language: string;
-  createdAt: string;     // ISO string
-  expiresAt?: string;    // ISO string
+  createdAt: string; // ISO string
+  expiresAt?: string; // ISO string
   consumed: boolean;
   size: number;
-  clientIP?: string;     // Optional for analytics
-  oneTimeView: boolean;  // Whether paste should be consumed after first view
+  clientIP?: string; // Optional for analytics
+  oneTimeView: boolean; // Whether paste should be consumed after first view
 }
 
 export interface CreatePasteInput {
@@ -30,7 +30,10 @@ export interface IStorage {
 }
 
 export class StorageError extends Error {
-  constructor(message: string, public code: string) {
+  constructor(
+    message: string,
+    public code: string
+  ) {
     super(message);
     this.name = 'StorageError';
   }
@@ -54,9 +57,9 @@ export class KVStorage implements IStorage {
       const array = new Uint8Array(length);
       crypto.getRandomValues(array);
       const id = Array.from(array)
-        .map((b) => chars[b % chars.length])
+        .map(b => chars[b % chars.length])
         .join('');
-      
+
       // Check if ID already exists
       const existing = await this.kv.get(id);
       if (!existing) {
@@ -64,7 +67,7 @@ export class KVStorage implements IStorage {
       }
       attempts++;
     }
-    
+
     throw new StorageError('Unable to generate unique ID', 'ID_GENERATION_FAILED');
   }
 
@@ -90,16 +93,16 @@ export class KVStorage implements IStorage {
         const now = Date.now();
         const expMs = new Date(paste.expiresAt).getTime();
         const ttlSec = Math.max(0, Math.floor((expMs - now) / 1000));
-        
+
         if (ttlSec <= 0) {
           throw new StorageError('Paste expiration is in the past', 'INVALID_EXPIRY');
         }
-        
+
         await this.kv.put(id, JSON.stringify(paste), { expirationTtl: ttlSec });
       } else {
         await this.kv.put(id, JSON.stringify(paste));
       }
-      
+
       return paste;
     } catch (error) {
       if (error instanceof StorageError) {
@@ -113,15 +116,15 @@ export class KVStorage implements IStorage {
     try {
       const value = await this.kv.get(id);
       if (!value) return null;
-      
+
       const paste: PasteData = JSON.parse(value);
-      
+
       // Check if expired (backup check)
       if (paste.expiresAt && new Date(paste.expiresAt) <= new Date()) {
         await this.kv.delete(id);
         return null;
       }
-      
+
       return paste;
     } catch (error) {
       console.error('Error getting paste:', error);
@@ -134,28 +137,28 @@ export class KVStorage implements IStorage {
       // Fetch the paste
       const raw = await this.kv.get(id);
       if (!raw) return null;
-      
+
       let paste: PasteData;
       try {
         paste = JSON.parse(raw);
       } catch {
         return null;
       }
-      
+
       // Check if already consumed
       if (paste.consumed) {
         return null;
       }
-      
+
       // Check if expired
       if (paste.expiresAt && new Date(paste.expiresAt) <= new Date()) {
         await this.kv.delete(id);
         return null;
       }
-      
+
       // Delete the paste (consume it)
       await this.kv.delete(id);
-      
+
       return paste;
     } catch (error) {
       console.error('Error consuming paste:', error);
@@ -166,7 +169,7 @@ export class KVStorage implements IStorage {
   async deletePaste(id: string): Promise<void> {
     try {
       await this.kv.delete(id);
-    } catch (error) {
+    } catch {
       throw new StorageError('Failed to delete paste', 'DELETE_FAILED');
     }
   }
@@ -176,7 +179,7 @@ export class KVStorage implements IStorage {
     try {
       const result = await this.kv.list({ limit, cursor });
       const pastes: PasteData[] = [];
-      
+
       for (const key of result.keys) {
         const value = await this.kv.get(key.name);
         if (value) {
@@ -188,12 +191,12 @@ export class KVStorage implements IStorage {
           }
         }
       }
-      
+
       return {
         pastes,
-        cursor: result.list_complete ? undefined : result.cursor
+        cursor: result.list_complete ? undefined : result.cursor,
       };
-    } catch (error) {
+    } catch {
       throw new StorageError('Failed to list pastes', 'LIST_FAILED');
     }
   }
@@ -217,7 +220,7 @@ export class MockStorage implements IStorage {
       size: data.size,
       oneTimeView: data.oneTimeView,
     };
-    
+
     this.pastes.set(id, paste);
     return paste;
   }
@@ -229,7 +232,7 @@ export class MockStorage implements IStorage {
   async consumePaste(id: string): Promise<PasteData | null> {
     const paste = this.pastes.get(id);
     if (!paste || paste.consumed) return null;
-    
+
     this.pastes.delete(id);
     return paste;
   }
@@ -237,4 +240,4 @@ export class MockStorage implements IStorage {
   async deletePaste(id: string): Promise<void> {
     this.pastes.delete(id);
   }
-} 
+}

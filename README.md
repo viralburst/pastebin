@@ -116,6 +116,18 @@ cd pastebin
 - [Cloudflare account](https://dash.cloudflare.com/sign-up) (free tier works!)
 - Git
 
+### 🔄 Updated Dependencies (v1.0.2)
+
+This project uses the latest stable versions of all dependencies:
+
+- **TypeScript 5.8.3**: Latest language features and performance improvements
+- **ESLint 9.29.0**: Modern flat config with comprehensive rules
+- **Wrangler 4.20.5**: Latest Cloudflare Workers CLI with improved DX
+- **Vitest 3.2.4**: Fast and modern testing framework
+- **Node.js Types 24.0.3**: Latest Node.js type definitions
+
+All dependencies have been updated to their latest stable versions with security patches applied.
+
 ### One-Click Deploy
 
 > **Note**: If you forked this repository, update the placeholders first! See [SETUP.md](SETUP.md) for instructions.

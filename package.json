@@ -1,6 +1,7 @@
 {
   "name": "secure-pastebin",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "type": "module",
   "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Live at https://1paste.dev",
   "main": "dist/worker.js",
   "homepage": "https://1paste.dev",
@@ -74,17 +75,16 @@
     "CHANGELOG.md"
   ],
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20231218.0",
-    "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.55.0",
-    "prettier": "^3.1.1",
-    "typescript": "^5.3.3",
-    "vitest": "^1.0.4",
-    "wrangler": "^3.20.0"
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "@types/node": "^24.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.20.5"
   },
-  "dependencies": {},
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/YOUR_USERNAME"
@@ -94,4 +94,4 @@
       "path": "cz-conventional-changelog"
     }
   }
-} 
+}
