@@ -24,6 +24,7 @@ A **production-ready, secure pastebin** built on **Cloudflare Workers** with **o
 - [🌟 Try it Live!](#-try-it-live)
 - [✨ Features](#-features)
 - [🚀 Quick Start](#-quick-start)
+- [📦 Installation Guide](INSTALL.md)
 - [🎯 Usage](#-usage)
 - [📖 API Documentation](#-api-documentation)
 - [⚙️ Configuration](#️-configuration)
@@ -81,11 +82,39 @@ A **production-ready, secure pastebin** built on **Cloudflare Workers** with **o
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 🤖 **Automated Setup (Recommended)**
+
+**The easiest way to get your pastebin running in under 5 minutes:**
+
+#### **Linux/macOS:**
+```bash
+git clone https://github.com/viralburst/pastebin.git
+cd pastebin
+./setup.sh
+```
+
+#### **Windows PowerShell:**
+```powershell
+git clone https://github.com/viralburst/pastebin.git
+cd pastebin
+.\setup.ps1
+```
+
+**That's it!** 🎉 The script will:
+- ✅ Check system requirements (Node.js 18+, npm, git)
+- ✅ Install Wrangler CLI automatically
+- ✅ Handle Cloudflare authentication
+- ✅ Create KV namespaces
+- ✅ Configure everything automatically
+- ✅ Build and deploy your pastebin
+- ✅ Test the deployment
+- ✅ Provide your live URL
+
+### Prerequisites (Auto-checked)
 - Node.js 18+ 
 - npm or yarn
-- [Cloudflare account](https://dash.cloudflare.com/sign-up)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
+- [Cloudflare account](https://dash.cloudflare.com/sign-up) (free tier works!)
+- Git
 
 ### One-Click Deploy
 
@@ -486,7 +515,7 @@ If you find this project useful, please consider giving it a star! ⭐
 - **⚡ Cloudflare Workers**: [https://workers.cloudflare.com/](https://workers.cloudflare.com/)
 - **🔧 TypeScript**: [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 - **🛠️ Wrangler CLI**: [https://developers.cloudflare.com/workers/wrangler/](https://developers.cloudflare.com/workers/wrangler/)
-- **📚 Documentation**: [DEPLOYMENT.md](DEPLOYMENT.md) | [CONTRIBUTING.md](CONTRIBUTING.md) | [SECURITY.md](SECURITY.md)
+- **📚 Documentation**: [INSTALL.md](INSTALL.md) | [DEPLOYMENT.md](DEPLOYMENT.md) | [CONTRIBUTING.md](CONTRIBUTING.md) | [SECURITY.md](SECURITY.md)
 
 ---
 
