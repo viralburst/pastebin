@@ -179,7 +179,7 @@ We welcome security audits from:
 For security-related questions or concerns:
 
 - **Security Email**: security@your-domain.com
-- **General Issues**: [GitHub Issues](https://github.com/your-username/secure-pastebin/issues)
+- **General Issues**: [GitHub Issues](https://github.com/viralburst/pastebin/issues)
 - **Documentation**: This SECURITY.md file
 
 ---

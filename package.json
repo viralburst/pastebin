@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI",
   "main": "dist/worker.js",
-  "homepage": "https://github.com/your-username/secure-pastebin",
+  "homepage": "https://github.com/viralburst/pastebin",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/secure-pastebin.git"
+    "url": "https://github.com/viralburst/pastebin.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/secure-pastebin/issues"
+    "url": "https://github.com/viralburst/pastebin/issues"
   },
   "scripts": {
     "build": "tsc && wrangler deploy --dry-run",

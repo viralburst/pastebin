@@ -2,7 +2,7 @@
 
 A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI. Perfect for sharing code snippets, logs, and sensitive data with automatic expiration.
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-username/secure-pastebin)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/viralburst/pastebin)
 
 ## ✨ Features
 
@@ -56,13 +56,13 @@ A production-ready, secure pastebin built on Cloudflare Workers with one-time vi
 
 ### One-Click Deploy
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-username/secure-pastebin)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/viralburst/pastebin)
 
 ### Manual Installation
 
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/your-username/secure-pastebin.git
+git clone https://github.com/viralburst/pastebin.git
 cd secure-pastebin
 npm install
 ```
@@ -433,8 +433,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📞 Support & Community
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-username/secure-pastebin/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/your-username/secure-pastebin/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/viralburst/pastebin/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/viralburst/pastebin/discussions)
 - 📖 **Documentation**: This README and inline code comments
 - 🚀 **Deployment Help**: [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
 

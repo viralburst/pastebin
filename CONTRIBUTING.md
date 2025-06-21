@@ -7,7 +7,7 @@ Thank you for your interest in contributing to Secure Pastebin! 🎉 This docume
 1. **Fork** the repository on GitHub
 2. **Clone** your fork locally:
    ```bash
-   git clone https://github.com/your-username/secure-pastebin.git
+   git clone https://github.com/viralburst/pastebin.git
    cd secure-pastebin
    ```
 3. **Install dependencies**:
