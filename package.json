@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "A production-ready, secure pastebin built on Cloudflare Workers with one-time view capability, comprehensive analytics, and a beautiful modern UI",
   "main": "dist/worker.js",
-  "homepage": "https://github.com/viralburst/pastebin",
+  "homepage": "https://github.com/YOUR_USERNAME/YOUR_REPO_NAME",
   "repository": {
     "type": "git",
-    "url": "https://github.com/viralburst/pastebin.git"
+    "url": "https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git"
   },
   "bugs": {
-    "url": "https://github.com/viralburst/pastebin/issues"
+    "url": "https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/issues"
   },
   "scripts": {
     "build": "tsc && wrangler deploy --dry-run",
@@ -50,7 +50,7 @@
   "author": {
     "name": "Your Name",
     "email": "your.email@example.com",
-    "url": "https://github.com/your-username"
+    "url": "https://github.com/YOUR_USERNAME"
   },
   "license": "MIT",
   "engines": {
@@ -80,7 +80,7 @@
   "dependencies": {},
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/your-username"
+    "url": "https://github.com/sponsors/YOUR_USERNAME"
   },
   "config": {
     "commitizen": {
