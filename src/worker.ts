@@ -681,22 +681,25 @@ function generateHomePage(stats: any): string {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
       text-decoration: none;
-      padding: 10px 16px;
+      padding: 12px 18px;
       border-radius: 25px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-weight: 700;
+      font-size: 0.95rem;
       transition: var(--transition);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
     }
 
     .github-link:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 1);
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      border-color: var(--primary-color);
     }
 
     .github-icon {
@@ -712,14 +715,16 @@ function generateHomePage(stats: any): string {
     .open-source-notice {
       background: linear-gradient(135deg, #28a745, #20c997);
       color: white;
-      padding: 20px 30px;
+      padding: 25px 30px;
       text-align: center;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .open-source-notice h4 {
-      margin-bottom: 8px;
-      font-size: 1.1rem;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
     }
 
     .open-source-notice p {
